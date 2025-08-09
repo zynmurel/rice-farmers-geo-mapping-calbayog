@@ -48,7 +48,7 @@ function LoginForm({userType} : {userType : "ADMIN" | "FARMER"}) {
     setMutationState((prev) => ({ ...prev, loading: false }));
 
     if (!res?.error) {
-      router.push("/");
+      router.push(`/${userType === "ADMIN" ? "admin" : "farmer"}`);
     } else {
       setMutationState(() => ({ loading : false , error: true }));
     }

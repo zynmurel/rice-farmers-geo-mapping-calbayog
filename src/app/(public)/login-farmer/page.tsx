@@ -36,6 +36,9 @@ export default async function Page() {
             <Image width={100} height={100} alt="logo" src={"/logo.png"} />
             <div className="text mb-5 text-center text-3xl font-bold text-white uppercase">
               Rice Farmers GEO Mapping
+              <p className="text-xl font-bold">
+                Calbayog City, Samar, Philippines
+              </p>
               <p className="text-xs font-normal">
                 Calbayog City, Samar, Philippines
               </p>

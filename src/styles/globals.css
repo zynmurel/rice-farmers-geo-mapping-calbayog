@@ -39,12 +39,12 @@
   --sidebar-accent-foreground: rgb(39, 48, 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: #fdfff6ed;
+  --background: #fcfff3fa;
   --foreground: oklch(0.145 0 0);
 }
 
 .dark {
-  --background: #0a0b09c6;
+  --background: #0a0b09e2;
   --foreground: rgb(251, 255, 234);
   --card: rgb(18, 23, 14);
   --card-foreground: oklch(0.985 0 0);

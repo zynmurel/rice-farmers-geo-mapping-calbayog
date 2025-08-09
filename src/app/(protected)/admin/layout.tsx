@@ -10,7 +10,7 @@ export default async function ProtectedLayout({
   const session = await auth();
 
   if (session?.user.type !== "ADMIN") {
-    redirect("/");
+    redirect("/farmer");
   }
 
   return (

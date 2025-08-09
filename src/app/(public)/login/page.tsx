@@ -10,13 +10,12 @@ import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
 import { ModeToggle } from "@/app/_components/mode-toggle";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function Page() {
   const session = await auth();
 
-  if (!!session?.user) {
-    redirect("/");
+  if (!!session?.user.type) {
+    redirect("/"+session?.user.type.toLowerCase());
   }
 
   return (
@@ -34,8 +33,11 @@ export default async function Page() {
         <div className="flex min-w-full flex-col items-center justify-center gap-2 p-2 sm:min-w-lg">
           <div className="flex flex-col items-center justify-center gap-3">
             <Image width={100} height={100} alt="logo" src={"/logo.png"} />
-            <div className="text mb-5 text-center text-3xl font-bold text-white uppercase">
-              Rice Farmers GEO Mapping
+            <div className="text mb-5 text-center text-4xl font-black text-white uppercase">
+               <p className=" tracking-widest">GEO-AGRI</p>
+              <p className="text-xl font-bold">
+                RICE FARMERS GEO MAPPING
+              </p>
               <p className="text-xs font-normal">
                 Calbayog City, Samar, Philippines
               </p>
@@ -43,7 +45,7 @@ export default async function Page() {
           </div>
           <Card className="bg-background w-full max-w-md gap-5 dark:opacity-80">
             <CardHeader className="gap-0">
-              <CardTitle className="text-lg font-semibold sm:text-2xl">
+              <CardTitle className="text-lg font-semibold sm:text-2xl mt-4">
                 Admin
               </CardTitle>
               <CardDescription>
@@ -52,15 +54,7 @@ export default async function Page() {
             </CardHeader>
             <CardContent>
               <LoginForm userType="ADMIN" />
-
-              <div className="flex flex-row items-center justify-center text-sm">
-                <p className="text-foreground/60 mt-2">
-                  Login as{" "}
-                  <Link href={"/login-farmer"} className="text-primary">
-                    Farmer
-                  </Link>
-                </p>
-              </div>
+              <p className=" text-center w-full text-xs mt-8 opacity-50">© Geo-Agri 2025. All rights reserved.</p>
             </CardContent>
           </Card>
         </div>

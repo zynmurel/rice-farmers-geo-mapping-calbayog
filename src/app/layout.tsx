@@ -8,6 +8,7 @@ import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "./_components/theme-provider";
+import 'leaflet/dist/leaflet.css';
 
 export const metadata: Metadata = {
   title: "Create T3 App",
