@@ -1,28 +1,46 @@
-import { IconLayoutDashboard, IconReport, IconSettings } from "@tabler/icons-react";
+import { Handshake, House, Newspaper, Users, Wheat, Settings, LayoutDashboard } from "lucide-react";
 
 export const menu = [
     {
-      title: "Dashboard",
-      key : "dashboard",
-      url: "/",
-      icon: IconLayoutDashboard,
+      title: "Overview",
+      key : "overview",
+      url: "/admin",
+      icon: LayoutDashboard,
     },
     {
       title: "Farmers",
-      key : "dashboard",
-      url: "/dashboard",
-      icon: IconLayoutDashboard,
+      key : "farmers",
+      url: "/admin/farmers",
+      icon: Users,
     },
     {
-      title: "Reports",
-      key : "reports",
-      url: "/reports",
-      icon: IconReport,
+      title: "Farms",
+      key : "farms",
+      url: "/admin/farms",
+      icon: House,
+    },
+    {
+      title: "Crops",
+      key : "crops",
+      url: "/admin/crops",
+      icon: Wheat,
+    },
+    {
+      title: "Crop Distribution",
+      key : "crop-distribution",
+      url: "/admin/crop-distribution",
+      icon: Handshake,
+    },
+    {
+      title: "News",
+      key : "news",
+      url: "/admin/news",
+      icon: Newspaper,
     },
     {
       title: "Settings",
       key : "settings",
-      url: "/settings",
-      icon: IconSettings,
+      url: "/admin/settings",
+      icon: Settings,
     }
   ]

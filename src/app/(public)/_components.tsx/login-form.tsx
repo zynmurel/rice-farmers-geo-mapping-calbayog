@@ -71,9 +71,9 @@ function LoginForm({userType} : {userType : "ADMIN" | "FARMER"}) {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{userType === "FARMER" ? 'Username/Phone Number' : 'Username'}</FormLabel>
               <FormControl>
-                <Input placeholder="Enter username" {...field} />
+                <Input placeholder={`Enter ${userType === "FARMER" ? 'username or phone number' : 'username'}`} {...field} />
               </FormControl>
               {/* <FormMessage /> */}
             </FormItem>

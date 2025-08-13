@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
-import FarmerLoginModal from "./_components/farmer-login-modal";
+import FarmerLoginModal from "./(public)/_components.tsx/farmer-login-modal";
 import dynamic from "next/dynamic";
 
 const MapView = dynamic(() => import("./_components/map"), { ssr: false });
@@ -72,7 +72,7 @@ function Page() {
                 },
               ].map((data) => (
                 <Link
-                  key={data.path}
+                  key={data.title}
                   className={`tracking-widest`}
                   href={data.path}
                   onClick={() => openModal(data.title === "LOGIN" ? "login" : "register")}
@@ -153,7 +153,7 @@ function Page() {
           </div>
 
           <div
-            className="border-sidebar-accent relative flex h-[20vh] flex-col items-center justify-center overflow-hidden border-t md:h-[30vh]"
+            className="border-sidebar-accent relative flex h-[20vh] mt-5 flex-col items-center justify-center overflow-hidden  md:h-[30vh]"
             id="about"
           >
             <Image
@@ -161,7 +161,7 @@ function Page() {
               height={1000}
               alt="logo"
               src={"/bg.png"}
-              className="absolute z-10 h-full w-full object-cover brightness-[.7] sepia-50"
+              className="absolute z-10 h-full w-full object-cover brightness-[.7] sepia-50 opacity-80"
             />
             <div className="z-50 flex h-full w-full max-w-[1300px] flex-col justify-end px-5 py-5 md:py-10">
               <p className="text-4xl font-bold tracking-widest shadow-black drop-shadow md:text-7xl">

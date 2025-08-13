@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import LoginForm from "../(public)/_components.tsx/login-form";
+import LoginForm from "./login-form";
 function FarmerLoginModal({
   open,
   openModal,
