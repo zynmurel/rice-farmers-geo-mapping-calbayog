@@ -23,6 +23,7 @@ interface CheckBoxesFormProps {
   data?: FarmDataType[];
   title: string;
   isLoading: boolean;
+  oneOnly?: boolean;
 }
 
 export function CheckBoxesForm({
@@ -31,6 +32,7 @@ export function CheckBoxesForm({
   data,
   title,
   isLoading,
+  oneOnly = false,
 }: CheckBoxesFormProps) {
   const { field } = useController({
     control,
@@ -40,10 +42,18 @@ export function CheckBoxesForm({
 
   const handleToggle = (riskId: number) => {
     const currentValue = field.value || [];
-    if (currentValue.includes(riskId)) {
-      field.onChange(currentValue.filter((id: number) => id !== riskId));
+    if (oneOnly) {
+      if (currentValue.includes(riskId)) {
+        field.onChange(currentValue.filter((id: number) => id !== riskId));
+      } else {
+        field.onChange([riskId]);
+      }
     } else {
-      field.onChange([...currentValue, riskId]);
+      if (currentValue.includes(riskId)) {
+        field.onChange(currentValue.filter((id: number) => id !== riskId));
+      } else {
+        field.onChange([...currentValue, riskId]);
+      }
     }
   };
 
@@ -52,11 +62,13 @@ export function CheckBoxesForm({
       control={control}
       name={name}
       render={() => (
-        <FormItem>
+        <FormItem className="flex flex-col">
           <FormLabel>{title}</FormLabel>
           <div className="flex flex-col flex-wrap gap-3 rounded-xl border p-5">
             {isLoading ? (
-              <div className=" w-full flex items-center  justify-center"><LoaderCircle className=" animate-spin"/></div>
+              <div className="flex w-full items-center justify-center">
+                <LoaderCircle className="animate-spin" />
+              </div>
             ) : (
               data?.map((item) => (
                 <div key={item.id} className="flex items-center space-x-2">

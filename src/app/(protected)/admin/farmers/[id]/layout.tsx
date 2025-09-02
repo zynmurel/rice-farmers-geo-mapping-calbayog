@@ -107,7 +107,7 @@ function Farmer({ children }: { children: JSX.Element }) {
                       src={farmer.profile || undefined}
                       alt={farmer.id}
                     />
-                    <AvatarFallback className="bg-card rounded-lg">
+                    <AvatarFallback className="bg-card rounded-lg uppercase">
                       {farmer.firstName[0]}
                       {farmer.lastName[0]}
                     </AvatarFallback>
@@ -151,25 +151,10 @@ function Farmer({ children }: { children: JSX.Element }) {
                     <House className="text-foreground/70 size-7" />
                     <div className="flex flex-col">
                       <p className="text-foreground/70 text-xs">
-                        Address Line One
+                        Address Line
                       </p>
                       <p className="-mt-0.5 text-sm font-medium">
                         {farmer.addressLineOne}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="dark:bg-background flex flex-row items-center gap-2 rounded-lg border bg-white p-3 px-5">
-                    <HousePlus className="text-foreground/70 size-7" />
-                    <div className="flex flex-col">
-                      <p className="text-foreground/70 text-xs">
-                        Address Line Two
-                      </p>
-                      <p className="text-sm font-medium">
-                        {farmer.addressLineTwo || (
-                          <span className="text-foreground/70 font-normal text-sm">
-                            No Address Provided
-                          </span>
-                        )}
                       </p>
                     </div>
                   </div>

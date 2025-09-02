@@ -27,10 +27,19 @@ import { Input } from "@/components/ui/input";
 import { CoordinatesFieldArray } from "./coordinate-farm-fields";
 import { api } from "@/trpc/react";
 import { CheckBoxesForm } from "./checkboxes-form";
-import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown, CornerLeftUp, Plus, X } from "lucide-react";
+import {
+  cn,
+  optionLandCategory,
+  optionSoilType,
+  optionSourceOfIrrigation,
+  optionTenurialStatus,
+  optionTopography,
+  optionWeatherRisks,
+} from "@/lib/utils";
 import { barangays } from "@/lib/const/barangays";
 import { ImageUploadField } from "./image-upload";
+import { Separator } from "@/components/ui/separator";
 
 interface FarmFieldsProps {
   control: Control<any>;
@@ -59,7 +68,7 @@ export function FarmFields({ control }: FarmFieldsProps) {
           return (
             <div
               key={farm.id}
-              className="relative grid gap-8 rounded-lg border p-5"
+              className="relative grid gap-8 rounded-lg border p-5 px-8"
             >
               <p className="-mb-3 font-bold">Farm {farmIndex + 1}</p>
               <FormField
@@ -78,7 +87,7 @@ export function FarmFields({ control }: FarmFieldsProps) {
                   </FormItem>
                 )}
               />
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-4">
                 <FormField
                   control={control}
                   name={`farms.${farmIndex}.barangay`}
@@ -147,16 +156,14 @@ export function FarmFields({ control }: FarmFieldsProps) {
                   name={`farms.${farmIndex}.address`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Sitio</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Farm address" />
+                        <Input {...field} placeholder="Farm sitio" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="grid gap-5 md:grid-cols-2">
                 <FormField
                   control={control}
                   name={`farms.${farmIndex}.landArea`}
@@ -185,25 +192,256 @@ export function FarmFields({ control }: FarmFieldsProps) {
                 />
               </div>
 
-              <div className="grid gap-5 md:grid-cols-2">
-                <CheckBoxesForm
-                  title="Farming Method"
-                  control={control}
-                  name={`farms.${farmIndex}.farmingMethodIds`}
-                  data={farmingMethod}
-                  isLoading={farmingMethodIsLoading}
-                />
+              <Separator />
+              <FormField
+                control={control}
+                name={`farms.${farmIndex}.land_category`}
+                render={({ field }) => {
+                  const onChangeCheck = (value: string) => {
+                    const current = field.value || [];
+                    if (current.includes(value)) {
+                      field.onChange(
+                        current.filter((c: string) => c !== value),
+                      );
+                    } else {
+                      field.onChange([value]);
+                    }
+                  };
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Land Category</FormLabel>
+                      <div className="flex flex-col gap-5">
+                        <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                          {optionLandCategory.map((w) => (
+                            <div
+                              key={w.value}
+                              className="flex flex-row items-center gap-2"
+                            >
+                              <Checkbox
+                                checked={field.value?.includes(w.value)}
+                                onCheckedChange={() => onChangeCheck(w.value)}
+                              />{" "}
+                              <p>{w.label}</p>
+                            </div>
+                          ))}
+                        </div>
 
-                <CheckBoxesForm
-                  title="Weather Risks"
-                  control={control}
-                  name={`farms.${farmIndex}.weatherRiskIds`}
-                  data={weatherRisk}
-                  isLoading={weatherRiskIsLoading}
-                />
-              </div>
+                        {field.value?.includes("IR") && (
+                          <FormField
+                            control={control}
+                            name={`farms.${farmIndex}.source_of_irrigation`}
+                            render={({ field }) => {
+                              const onChangeCheck = (value: string) => {
+                                const current = field.value || [];
+                                if (current.includes(value)) {
+                                  field.onChange(
+                                    current.filter((c: string) => c !== value),
+                                  );
+                                } else {
+                                  field.onChange([value]);
+                                }
+                              };
+                              return (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel className="flex flex-row gap-0.5">
+                                    <CornerLeftUp className="size-4" /> Source
+                                    of Irrigation
+                                  </FormLabel>
+                                  <div className="flex">
+                                    <div className="flex w-auto flex-col gap-2 rounded-lg">
+                                      {optionSourceOfIrrigation.map((w) => (
+                                        <div key={w.value} className="flex flex-row items-center gap-2">
+                                          <Checkbox
+                                            checked={field.value?.includes(
+                                              w.value,
+                                            )}
+                                            onCheckedChange={() =>
+                                              onChangeCheck(w.value)
+                                            }
+                                          />{" "}
+                                          <p>{w.label}</p>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <FormMessage />
+                                </FormItem>
+                              );
+                            }}
+                          />
+                        )}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Separator />
 
-              <ImageUploadField control={control} name={`farms.${farmIndex}.images`}/>
+              <FormField
+                control={control}
+                name={`farms.${farmIndex}.weather_risks`}
+                render={({ field }) => {
+                  const onChangeCheck = (value: string) => {
+                    const current = field.value || [];
+                    if (current.includes(value)) {
+                      field.onChange(
+                        current.filter((c: string) => c !== value),
+                      );
+                    } else {
+                      field.onChange([...current, value]);
+                    }
+                  };
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Weather Risks</FormLabel>
+                      <div className="flex">
+                        <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                          {optionWeatherRisks.map((w) => (
+                            <div
+                              key={w.value}
+                              className="flex flex-row items-center gap-2"
+                            >
+                              <Checkbox
+                                checked={field.value?.includes(w.value)}
+                                onCheckedChange={() => onChangeCheck(w.value)}
+                              />{" "}
+                              <p>{w.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Separator />
+
+              <FormField
+                control={control}
+                name={`farms.${farmIndex}.soil_type`}
+                render={({ field }) => {
+                  const onChangeCheck = (value: string) => {
+                    const current = field.value || [];
+                    if (current.includes(value)) {
+                      field.onChange(
+                        current.filter((c: string) => c !== value),
+                      );
+                    } else {
+                      field.onChange([value]);
+                    }
+                  };
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Soil Type</FormLabel>
+                      <div className="flex">
+                        <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                          {optionSoilType.map((w) => (
+                            <div
+                              key={w.value}
+                              className="flex flex-row items-center gap-2"
+                            >
+                              <Checkbox
+                                checked={field.value?.includes(w.value)}
+                                onCheckedChange={() => onChangeCheck(w.value)}
+                              />{" "}
+                              <p>{w.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Separator />
+
+              <FormField
+                control={control}
+                name={`farms.${farmIndex}.topography`}
+                render={({ field }) => {
+                  const onChangeCheck = (value: string) => {
+                    const current = field.value || [];
+                    if (current.includes(value)) {
+                      field.onChange(
+                        current.filter((c: string) => c !== value),
+                      );
+                    } else {
+                      field.onChange([value]);
+                    }
+                  };
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Topography</FormLabel>
+                      <div className="flex">
+                        <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                          {optionTopography.map((w) => (
+                            <div
+                              key={w.value}
+                              className="flex flex-row items-center gap-2"
+                            >
+                              <Checkbox
+                                checked={field.value?.includes(w.value)}
+                                onCheckedChange={() => onChangeCheck(w.value)}
+                              />{" "}
+                              <p>{w.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+
+              <Separator />
+              <FormField
+                control={control}
+                name={`farms.${farmIndex}.tenurial_status`}
+                render={({ field }) => {
+                  const onChangeCheck = (value: string) => {
+                    const current = field.value || [];
+                    if (current.includes(value)) {
+                      field.onChange(
+                        current.filter((c: string) => c !== value),
+                      );
+                    } else {
+                      field.onChange([value]);
+                    }
+                  };
+                  return (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Tenurial Status</FormLabel>
+                      <div className="flex">
+                        <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                          {optionTenurialStatus.map((w) => (
+                            <div
+                              key={w.value}
+                              className="flex flex-row items-center gap-2"
+                            >
+                              <Checkbox
+                                checked={field.value?.includes(w.value)}
+                                onCheckedChange={() => onChangeCheck(w.value)}
+                              />{" "}
+                              <p>{w.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+              <Separator />
+
+              <ImageUploadField
+                control={control}
+                name={`farms.${farmIndex}.images`}
+              />
               {/* Coordinates */}
               <FormField
                 control={control}

@@ -53,7 +53,9 @@ export const formatCoordinatesToJSON = (coordString: string | undefined) => {
   return result;
 };
 
-export function getCenterOfCoords(coords: [number, number][]): [number, number] {
+export function getCenterOfCoords(
+  coords: [number, number][],
+): [number, number] {
   const total = coords.reduce(
     (acc, [lat, lng]) => {
       acc.lat += lat!;
@@ -75,3 +77,92 @@ export const COLORS: string[] = Array.from({ length: 12 }, (_, i) => {
 export function getColor(index: number) {
   return COLORS[index % COLORS.length]; // loops back to start
 }
+
+export const weather_risks = {
+  MD: "Drought",
+  FD: "Flood Prone",
+};
+
+export const land_category = {
+  IR: "Irrigated",
+  RF: "Rain fed",
+  UL: "Upland",
+};
+
+export const source_of_irrigation = {
+  NIA_CIS: "National Irrigation Administration",
+  DW: "Deep Well",
+  SWIP: "Small water impounding project",
+  STW: "Shallow tube well",
+};
+
+export const soil_type = {
+  CL: "Clay Loam",
+  SCL: "Silty Clay Loam",
+  SiL: "Silty Loam",
+  SaL: "Sandy Loam",
+};
+
+export const topography = {
+  FLAT: "Flat",
+  ROLLING: "Rolling",
+  HILLY: "Hilly",
+};
+
+export const tenurial_status = {
+  OWNER: "Owner",
+  LESSEE: "Lessee",
+  TENANT: "Tenant",
+};
+
+export const optionWeatherRisks = Object.entries(weather_risks).map(
+  ([key, value]) => {
+    return {
+      label: value,
+      value: key,
+    };
+  },
+);
+
+export const optionLandCategory = Object.entries(land_category).map(
+  ([key, value]) => {
+    return {
+      label: value,
+      value: key,
+    };
+  },
+);
+
+export const optionSourceOfIrrigation = Object.entries(
+  source_of_irrigation,
+).map(([key, value]) => {
+  return {
+    label: value,
+    value: key,
+  };
+});
+
+export const optionSoilType = Object.entries(soil_type).map(([key, value]) => {
+  return {
+    label: value,
+    value: key,
+  };
+});
+
+export const optionTopography = Object.entries(topography).map(
+  ([key, value]) => {
+    return {
+      label: value,
+      value: key,
+    };
+  },
+);
+
+export const optionTenurialStatus = Object.entries(tenurial_status).map(
+  ([key, value]) => {
+    return {
+      label: value,
+      value: key,
+    };
+  },
+);

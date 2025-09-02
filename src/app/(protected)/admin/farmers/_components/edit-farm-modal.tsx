@@ -308,7 +308,7 @@ function EditFarmModal() {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <CheckBoxesForm
-                    title="Farming Method"
+                    title="Land Category"
                     control={control}
                     name={`farmingMethodIds`}
                     data={farmingMethod}

@@ -78,7 +78,6 @@ function EditFarmerModal() {
       phoneNumber: farmer?.phoneNumber,
       birthday: farmer?.birthday,
       addressLineOne: farmer?.addressLineOne,
-      addressLineTwo: farmer?.addressLineTwo || undefined,
     },
   });
 
@@ -102,7 +101,6 @@ function EditFarmerModal() {
         phoneNumber: farmer?.phoneNumber,
         birthday: farmer?.birthday,
         addressLineOne: farmer?.addressLineOne,
-        addressLineTwo: farmer?.addressLineTwo || undefined,
       });
     }
   }, [farmer]);
@@ -226,25 +224,9 @@ function EditFarmerModal() {
                     name="addressLineOne"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address Line 1</FormLabel>
+                        <FormLabel>Address Line</FormLabel>
                         <FormControl>
                           <Input placeholder="123 Main Street" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="addressLineTwo"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Address Line 2 (Optional)</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Apartment, Suite, etc."
-                            {...field}
-                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

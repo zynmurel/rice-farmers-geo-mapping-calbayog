@@ -39,11 +39,17 @@ model Farmer {
     accountId      String?        @unique
     profile        String?
     phoneNumber    String         @unique
+    rsbsaNo        String         @default("TEST")
     firstName      String
+    middleName     String?
     lastName       String
     birthday       DateTime
     addressLineOne String
-    addressLineTwo String?
+    gender         gender         @default(MALE)
+    civilStatus    civil_status   @default(SINGLE)
+    spouse         String?
+    indigenous     Boolean        @default(false)
+    tribe          String? //if indigenous
     createdAt      DateTime       @default(now())
     updatedAt      DateTime?      @updatedAt
     FarmerAccount  FarmerAccount? @relation(fields: [accountId], references: [id])
@@ -52,21 +58,78 @@ model Farmer {
 }
 
 model Farm {
-    id                String              @id @default(uuid())
-    isPublished       Boolean             @default(true)
-    isFeatured        Boolean             @default(false)
-    farmerId          String
-    farmerCount       Int
-    barangay          String
-    address           String
-    landArea          Float
-    coordinates       Json // [{"lat": 14.605, "lng": 121.0}, {"lat": 14.606, "lng": 121.002}]
-    createdAt         DateTime            @default(now())
-    updatedAt         DateTime?           @updatedAt
-    Farmer            Farmer              @relation(fields: [farmerId], references: [id])
-    FarmImage         FarmImage[]
-    FarmFarmingMethod FarmFarmingMethod[]
-    FarmWeatherRisk   FarmWeatherRisk[]
+    id                   String                @id @default(uuid())
+    isPublished          Boolean               @default(true)
+    isFeatured           Boolean               @default(false)
+    farmerId             String
+    farmerCount          Int
+    barangay             String
+    address              String
+    landArea             Float
+    coordinates          Json // [{"lat": 14.605, "lng": 121.0}, {"lat": 14.606, "lng": 121.002}]
+    land_category        String[]
+    weather_risks        String[]
+    source_of_irrigation String[]
+    soil_type            String[]
+    topography           String[]
+    tenurial_status      String[]
+    createdAt            DateTime              @default(now())
+    updatedAt            DateTime?             @updatedAt
+    Farmer               Farmer                @relation(fields: [farmerId], references: [id])
+    FarmImage            FarmImage[]
+    FarmFarmingMethod    FarmFarmingMethod[]
+    FarmWeatherRisk      FarmWeatherRisk[]
+}
+
+enum weather_risks {
+    MD //Moderate Drought
+    FD //Flood Prone
+}
+
+enum land_category {
+    IR //Irrigated
+    RF //Rain fed
+    UL //Upland
+}
+
+//If land category is Irrigated
+enum source_of_irrigation {
+    NIA_CIS //National Irrigation Administration
+    DW //Deep Well
+    SWIP //Small water impounding project
+    STW //Shallow tube well
+}
+
+enum soil_type {
+    CL //Clay Loam
+    SCL //Silty Clay Loam
+    SiL //Silty Loam
+    SaL //Sandy Loam
+}
+
+enum topography {
+    FLAT
+    ROLLING
+    HILLY
+}
+
+enum tenurial_status {
+    OWNER
+    LESSEE
+    TENANT
+}
+
+enum gender {
+    MALE
+    FEMALE
+}
+
+enum civil_status {
+    SINGLE
+    MARRIED
+    WIDOW
+    LEGALLY_SEPARATED
+    ANNULED
 }
 
 model Crop {

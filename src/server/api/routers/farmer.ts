@@ -109,8 +109,6 @@ export const farmerRouter = createTRPCRouter({
         const farmsData = await Promise.all(
           farms.map(async (farm) => {
             const {
-              weatherRiskIds,
-              farmingMethodIds,
               images,
               coordinates,
               ...rest
@@ -121,18 +119,6 @@ export const farmerRouter = createTRPCRouter({
                 farmerId: farmerData.id,
                 ...rest,
                 coordinates: coordinatesToJson || [],
-                FarmWeatherRisk: {
-                  createMany: {
-                    data: weatherRiskIds.map((wr) => ({ weatherRiskId: wr })),
-                  },
-                },
-                FarmFarmingMethod: {
-                  createMany: {
-                    data: farmingMethodIds.map((fm) => ({
-                      farmingMethodId: fm,
-                    })),
-                  },
-                },
                 FarmImage: {
                   createMany: {
                     data: images.map((imgUrl, index) => ({

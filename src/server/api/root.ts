@@ -3,6 +3,7 @@ import { weatherRiskRouter } from "./routers/weatherRisk";
 import { farmingMethodRouter } from "./routers/farmingMethod";
 import { farmerRouter } from "./routers/farmer";
 import { farmRouter } from "./routers/farm";
+import { publicRouter } from "./routers/public";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { farmRouter } from "./routers/farm";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  public : publicRouter,
   farmer: farmerRouter,
   farm: farmRouter,
   farmingMethod: farmingMethodRouter,
