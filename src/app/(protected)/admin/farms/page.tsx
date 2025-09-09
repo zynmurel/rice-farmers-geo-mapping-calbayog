@@ -54,7 +54,7 @@ import { api } from "@/trpc/react";
 import { format } from "date-fns";
 import TablePagination from "@/app/_components/table-pagination";
 import { barangays } from "@/lib/const/barangays";
-import { cn } from "@/lib/utils";
+import { cn, optionLandCategory, optionWeatherRisks } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import EditFarmModal from "../farmers/_components/edit-farm-modal";
@@ -80,12 +80,12 @@ function Farmers() {
 
   const [farmingMethodIds, setFarmingMethodIds] = useQueryState(
     "farmingMethodIds",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
 
   const [weatherRiskIds, setWeatherRiskIds] = useQueryState(
     "weatherRiskIds",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
 
   const [_, setId] = useQueryState("edit-farm", parseAsString.withDefault(""));
@@ -94,12 +94,6 @@ function Farmers() {
     skip: parseAsInteger.withDefault(0),
     take: parseAsInteger.withDefault(10),
   });
-
-  const { data: farmingMethod, isLoading: farmingMethodIsLoading } =
-    api.farmingMethod.getFarmingMethods.useQuery();
-
-  const { data: weatherRisk, isLoading: weatherRiskIsLoading } =
-    api.weatherRisk.getWeatherRisks.useQuery();
 
   const { data: farms, isLoading: farmsIsLoading } = api.farm.getFarm.useQuery({
     barangay,
@@ -120,13 +114,13 @@ function Farmers() {
     setId(id);
   };
 
-  const toggleFarmingMethods = (id: number) => {
+  const toggleFarmingMethods = (id: string) => {
     setFarmingMethodIds((prev) => {
       return prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id];
     });
   };
 
-  const toggleWeatherRisks = (id: number) => {
+  const toggleWeatherRisks = (id: string) => {
     setWeatherRiskIds((prev) => {
       return prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id];
     });
@@ -139,7 +133,7 @@ function Farmers() {
           <EditFarmIsFeatured />
           <EditFarmModal />
           <CardContent>
-            <div className="grid grid-cols-2">
+            <div className="flex w-full flex-row items-end justify-between">
               <div className="flex h-full flex-col justify-between">
                 <div className="flex flex-row items-center gap-1 font-semibold">
                   <Search className="size-5" strokeWidth={3} />
@@ -202,8 +196,8 @@ function Farmers() {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline">
-                        <Sprout />
-                        Farming Methods
+                        Land Category
+                        <ChevronsUpDown />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-64">
@@ -211,32 +205,28 @@ function Farmers() {
                         Filter by Farming Method
                       </h4>
                       <div className="flex max-h-60 flex-col gap-2 overflow-auto">
-                        {farmingMethodIsLoading ? (
-                          <LoaderCircle className="animate-spin" />
-                        ) : (
-                          farmingMethod?.map((stat) => (
-                            <label
-                              key={stat.id}
-                              className="flex items-center gap-2"
-                            >
-                              <Checkbox
-                                checked={farmingMethodIds?.includes(stat.id)}
-                                onCheckedChange={() =>
-                                  toggleFarmingMethods(stat.id)
-                                }
-                              />
-                              <span className="text-sm">{stat.name}</span>
-                            </label>
-                          ))
-                        )}
+                        {optionLandCategory.map((stat) => (
+                          <label
+                            key={stat.value}
+                            className="flex items-center gap-2"
+                          >
+                            <Checkbox
+                              checked={farmingMethodIds?.includes(stat.value)}
+                              onCheckedChange={() =>
+                                toggleFarmingMethods(stat.value)
+                              }
+                            />
+                            <span className="text-sm">{stat.label}</span>
+                          </label>
+                        ))}
                       </div>
                     </PopoverContent>
                   </Popover>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline">
-                        <CloudSunRain />
                         Weather Risks
+                        <ChevronsUpDown />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-64">
@@ -244,24 +234,20 @@ function Farmers() {
                         Filter by Weather Risk
                       </h4>
                       <div className="flex max-h-60 flex-col gap-2 overflow-auto">
-                        {weatherRiskIsLoading ? (
-                          <LoaderCircle className="animate-spin" />
-                        ) : (
-                          weatherRisk?.map((stat) => (
-                            <label
-                              key={stat.id}
-                              className="flex items-center gap-2"
-                            >
-                              <Checkbox
-                                checked={weatherRiskIds?.includes(stat.id)}
-                                onCheckedChange={() =>
-                                  toggleWeatherRisks(stat.id)
-                                }
-                              />
-                              <span className="text-sm">{stat.name}</span>
-                            </label>
-                          ))
-                        )}
+                        {optionWeatherRisks?.map((stat) => (
+                          <label
+                            key={stat.value}
+                            className="flex items-center gap-2"
+                          >
+                            <Checkbox
+                              checked={weatherRiskIds?.includes(stat.value)}
+                              onCheckedChange={() =>
+                                toggleWeatherRisks(stat.value)
+                              }
+                            />
+                            <span className="text-sm">{stat.label}</span>
+                          </label>
+                        ))}
                       </div>
                     </PopoverContent>
                   </Popover>
@@ -270,7 +256,10 @@ function Farmers() {
               <div className="flex flex-col items-end gap-1">
                 {["All", "Featured", "Published"].map((data) => {
                   return (
-                    <div key={data} className="flex flex-row items-center gap-2">
+                    <div
+                      key={data}
+                      className="flex flex-row items-center gap-2"
+                    >
                       <p className="text-sm font-medium text-nowrap">{data}</p>
                       <Checkbox
                         checked={farmStatus === data}
@@ -303,7 +292,10 @@ function Farmers() {
               {!farmsIsLoading &&
                 farms?.map((farm) => {
                   return (
-                    <div key={farm.id} className="flex min-h-40 flex-row justify-between rounded-lg border p-5 xl:gap-10">
+                    <div
+                      key={farm.id}
+                      className="flex min-h-40 flex-row justify-between rounded-lg border p-5 xl:gap-10"
+                    >
                       <div className="flex flex-1 flex-row gap-5 xl:gap-10">
                         <div className="flex h-full flex-1 flex-col justify-between">
                           <div>
@@ -348,23 +340,26 @@ function Farmers() {
                         <div className="flex h-full min-w-48 flex-col">
                           <div className="flex flex-row items-center gap-1">
                             <Sprout className="size-4" strokeWidth={3} />
-                            <p className="text-sm font-bold">FARMING METHODS</p>
+                            <p className="text-sm font-bold">Land Category</p>
                           </div>
-                          {farm.FarmFarmingMethod.length ? (
+                          {farm.land_category.length ? (
                             <div className="grid gap-1 py-2">
-                              {farm.FarmFarmingMethod?.map(
-                                ({ FarmingMethod }) => {
-                                  const fm = FarmingMethod;
-                                  return (
-                                    <Badge key={fm.id} className="bg-chart-1 px-3! pb-0.5 text-sm">
-                                      {fm.name}
-                                    </Badge>
-                                  );
-                                },
-                              )}
+                              {farm.land_category?.map((lc) => {
+                                const label = optionLandCategory.find(
+                                  (l) => l.value === lc,
+                                )?.label;
+                                return (
+                                  <Badge
+                                    key={lc}
+                                    className="bg-chart-1 px-3! pb-0.5 text-sm"
+                                  >
+                                    {label}
+                                  </Badge>
+                                );
+                              })}
                             </div>
                           ) : (
-                            <div className="text-foreground/70 my-2 flex h-full items-center justify-center rounded-lg bg-foreground/5 text-sm">
+                            <div className="text-foreground/70 bg-foreground/5 my-2 flex h-full items-center justify-center rounded-lg text-sm">
                               No Farming Method
                             </div>
                           )}
@@ -375,19 +370,24 @@ function Farmers() {
                             <CloudSunRain className="size-4" strokeWidth={3} />
                             <p className="text-sm font-bold">WEATHER RISKS</p>
                           </div>
-                          {farm.FarmWeatherRisk.length ? (
+                          {farm.weather_risks.length ? (
                             <div className="grid gap-1 py-2">
-                              {farm.FarmWeatherRisk?.map(({ WeatherRisk }) => {
-                                const fm = WeatherRisk;
+                              {farm.weather_risks?.map((wr) => {
+                                const label = optionWeatherRisks.find(
+                                  (w) => w.value === wr,
+                                )?.label;
                                 return (
-                                  <Badge key={fm.id} className="bg-chart-2 px-3! pb-0.5 text-sm">
-                                    {fm.name}
+                                  <Badge
+                                    key={wr}
+                                    className="bg-chart-2 px-3! pb-0.5 text-sm"
+                                  >
+                                    {label}
                                   </Badge>
                                 );
                               })}
                             </div>
                           ) : (
-                            <div className="text-foreground/70 my-2 flex h-full items-center justify-center rounded-lg bg-foreground/5 text-sm">
+                            <div className="text-foreground/70 bg-foreground/5 my-2 flex h-full items-center justify-center rounded-lg text-sm">
                               No weather risks
                             </div>
                           )}
@@ -427,7 +427,7 @@ function Farmers() {
                                   disabled={!farm.isPublished}
                                   className="pr-4"
                                   onClick={() =>
-                                    setOpenEditFeatured(()=>({
+                                    setOpenEditFeatured(() => ({
                                       id: farm.id,
                                       isFeatured: !farm.isFeatured,
                                     }))
@@ -455,12 +455,12 @@ function Farmers() {
                 })}
 
               {farmsIsLoading && (
-                <div className="text-muted-foreground mt-1 flex flex-col items-center justify-center rounded-2xl bg-foreground/5 p-10 text-sm">
+                <div className="text-muted-foreground bg-foreground/5 mt-1 flex flex-col items-center justify-center rounded-2xl p-10 text-sm">
                   <LoaderCircle className="animate-spin" />
                 </div>
               )}
               {!farmCount && !farmsIsLoading && (
-                <div className="text-muted-foreground mt-1 flex flex-col items-center justify-center rounded-2xl bg-foreground/5 p-10 text-sm">
+                <div className="text-muted-foreground bg-foreground/5 mt-1 flex flex-col items-center justify-center rounded-2xl p-10 text-sm">
                   <p className="text-base font-semibold">No farm found</p>
                   <p>Adjust filter to show more farms</p>
                 </div>
@@ -509,22 +509,18 @@ const DisplayFilter = () => {
 
   const [farmingMethodIds, setFarmingMethodIds] = useQueryState(
     "farmingMethodIds",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
 
   const [weatherRiskIds, setWeatherRiskIds] = useQueryState(
     "weatherRiskIds",
-    parseAsArrayOf(parseAsInteger).withDefault([]),
+    parseAsArrayOf(parseAsString).withDefault([]),
   );
-
-  const { data: farmingMethod } =
-    api.farmingMethod.getFarmingMethods.useQuery();
-
-  const { data: weatherRisk } = api.weatherRisk.getWeatherRisks.useQuery();
 
   return weatherRiskIds.length ||
     farmingMethodIds.length ||
-    barangay !== "All" || farmStatus !=="All" ? (
+    barangay !== "All" ||
+    farmStatus !== "All" ? (
     <div>
       <p className="text-muted-foreground mt-2 mb-1 text-xs">Filters</p>
       <div className="flex flex-row flex-wrap gap-1">
@@ -532,7 +528,7 @@ const DisplayFilter = () => {
           <Badge key={barangay} variant={"default"} className="bg-chart-3">
             {barangay}
             <div
-              className={` size-3.5 cursor-pointer`}
+              className={`size-3.5 cursor-pointer`}
               onClick={() => setBarangay("All")}
             >
               <X className="size-3.5" />
@@ -543,7 +539,7 @@ const DisplayFilter = () => {
           <Badge key={farmStatus} variant={"default"} className="bg-chart-4">
             {farmStatus}
             <div
-              className={` size-3.5 cursor-pointer`}
+              className={`size-3.5 cursor-pointer`}
               onClick={() => setFarmStatus("All")}
             >
               <X className="size-3.5" />
@@ -553,7 +549,7 @@ const DisplayFilter = () => {
         {farmingMethodIds.map((stat) => {
           return (
             <Badge key={stat} variant={"default"} className="bg-chart-1">
-              {farmingMethod?.find((fm) => fm.id === stat)?.name}
+              {optionLandCategory?.find((fm) => fm.value === stat)?.label}
               <div
                 className={`bgch size-3.5 cursor-pointer`}
                 onClick={() =>
@@ -568,7 +564,7 @@ const DisplayFilter = () => {
         {weatherRiskIds.map((stat) => {
           return (
             <Badge key={stat} variant={"default"} className="bg-chart-2">
-              {weatherRisk?.find((fm) => fm.id === stat)?.name}
+              {optionWeatherRisks?.find((fm) => fm.value === stat)?.label}
               <div
                 className={`size-3.5 cursor-pointer`}
                 onClick={() =>

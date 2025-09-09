@@ -5,8 +5,8 @@ export const farmRouter = createTRPCRouter({
   getFarm: protectedProcedure
     .input(
       z.object({
-        farmingMethodIds: z.number().array(),
-        weatherRiskIds: z.number().array(),
+        farmingMethodIds: z.string().array(),
+        weatherRiskIds: z.string().array(),
         farmStatus: z.enum(["All", "Featured", "Published"]),
         barangay: z.string(),
         skip: z.number(),
@@ -28,15 +28,15 @@ export const farmRouter = createTRPCRouter({
         const whereBarangay = barangay === "All" ? {} : { barangay };
         const whereFarmingMethod = farmingMethodIds.length
           ? {
-              FarmFarmingMethod: {
-                some: { farmingMethodId: { in: farmingMethodIds } },
+              land_category: {
+                hasEvery: farmingMethodIds,
               },
             }
           : {};
         const whereWeatherRisk = weatherRiskIds.length
           ? {
-              FarmWeatherRisk: {
-                some: { weatherRiskId: { in: weatherRiskIds } },
+              weather_risks: {
+                hasEvery: weatherRiskIds,
               },
             }
           : {};
@@ -74,8 +74,8 @@ export const farmRouter = createTRPCRouter({
   getFarmCount: protectedProcedure
     .input(
       z.object({
-        farmingMethodIds: z.number().array(),
-        weatherRiskIds: z.number().array(),
+        farmingMethodIds: z.string().array(),
+        weatherRiskIds: z.string().array(),
         barangay: z.string(),
         farmStatus: z.enum(["All", "Featured", "Published"]),
       }),
@@ -88,15 +88,15 @@ export const farmRouter = createTRPCRouter({
         const whereBarangay = barangay === "All" ? {} : { barangay };
         const whereFarmingMethod = farmingMethodIds.length
           ? {
-              FarmFarmingMethod: {
-                some: { farmingMethodId: { in: farmingMethodIds } },
+              land_category: {
+                hasEvery: farmingMethodIds,
               },
             }
           : {};
         const whereWeatherRisk = weatherRiskIds.length
           ? {
-              FarmWeatherRisk: {
-                some: { weatherRiskId: { in: weatherRiskIds } },
+              weather_risks: {
+                hasEvery: weatherRiskIds,
               },
             }
           : {};

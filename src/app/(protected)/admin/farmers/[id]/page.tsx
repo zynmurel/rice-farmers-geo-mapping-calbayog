@@ -25,13 +25,19 @@ import {
   Wheat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { api } from "@/trpc/react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import CoordinateShape from "@/lib/coordinates-shape";
 import { parseAsString, useQueryState } from "nuqs";
 import EditFarmModal from "../_components/edit-farm-modal";
+import { optionWeatherRisks } from "@/lib/utils";
 
 function Farms() {
   const { id } = useParams();
@@ -75,7 +81,7 @@ function Farms() {
             >
               <CardHeader className="flex flex-row justify-between">
                 <div>
-                  <CardDescription>Farm {index + 1}</CardDescription>
+                  <CardDescription>Farm Parcel {index + 1}</CardDescription>
                   <CardTitle className="-mt-1 flex flex-row items-center gap-2 text-2xl">
                     Barangay {farm.barangay}
                     <Badge
@@ -200,20 +206,20 @@ function Farms() {
                       <div className="border-chart-4 border-l-[14px] pl-2">
                         <p className="text-xs uppercase">WEATHER RISKS</p>
                         <div className="border-primary flex flex-col gap-1">
-                          {farm.FarmWeatherRisk.map((fm) => (
+                          {optionWeatherRisks.map((fm) => (
                             <>
                               <div className="flex flex-row items-center gap-2 text-base font-bold uppercase">
-                                {fm.WeatherRisk.name === "Flood-prone" ? (
+                                {fm.label === "Flood-prone" ? (
                                   <Waves strokeWidth={2.5} />
-                                ) : fm.WeatherRisk.name === "Typehoon Prone" ? (
+                                ) : fm.label === "Typehoon Prone" ? (
                                   <CloudRain strokeWidth={2.5} />
-                                ) : fm.WeatherRisk.name ===
+                                ) : fm.label ===
                                   "Moderate Drought" ? (
                                   <RailSymbol strokeWidth={2.5} />
                                 ) : (
                                   <Component />
                                 )}
-                                {fm.WeatherRisk.name}
+                                {fm.label}
                               </div>
                             </>
                           ))}
@@ -227,7 +233,7 @@ function Farms() {
                     <p className="top-2 left-2 text-xs font-bold uppercase">
                       MAP SHAPE
                     </p>
-                    <div className="bg-foreground/5 relative z-0 flex aspect-video w-full items-center justify-center rounded border overflow-hidden">
+                    <div className="bg-foreground/5 relative z-0 flex aspect-video w-full items-center justify-center overflow-hidden rounded border">
                       <CoordinateShape
                         coordinates={coordinates}
                         index={index}
@@ -251,7 +257,9 @@ function Farms() {
                                 );
                                 params.set("newParam", "123"); // Add or update your param
 
-                                router.push(`${pathname}/map?activeFarmId=${farm.id}`);
+                                router.push(
+                                  `${pathname}/map?activeFarmId=${farm.id}`,
+                                );
                               }}
                             >
                               Show on Map

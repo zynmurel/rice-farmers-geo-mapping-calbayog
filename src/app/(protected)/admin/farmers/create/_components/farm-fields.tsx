@@ -55,12 +55,6 @@ export function FarmFields({ control }: FarmFieldsProps) {
     name: "farms",
   });
 
-  const { data: farmingMethod, isLoading: farmingMethodIsLoading } =
-    api.farmingMethod.getFarmingMethods.useQuery();
-
-  const { data: weatherRisk, isLoading: weatherRiskIsLoading } =
-    api.weatherRisk.getWeatherRisks.useQuery();
-
   return (
     <div className="grid gap-8 pb-3">
       <div className="space-y-4">
@@ -70,7 +64,7 @@ export function FarmFields({ control }: FarmFieldsProps) {
               key={farm.id}
               className="relative grid gap-8 rounded-lg border p-5 px-8"
             >
-              <p className="-mb-3 font-bold">Farm {farmIndex + 1}</p>
+              <p className="-mb-3 font-bold">Farm Parcel {farmIndex + 1}</p>
               <FormField
                 control={control}
                 name={`farms.${farmIndex}.isPublished`}
