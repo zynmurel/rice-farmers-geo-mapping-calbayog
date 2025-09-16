@@ -59,7 +59,10 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
     onSuccess: async () => {
       toast.success(`Crop ${isCreate ? "created" : "updated"}`);
       setId(null);
-      await Promise.all([utils.crop.getCrops.invalidate()]);
+      await Promise.all([
+        utils.crop.getCrops.invalidate(),
+        utils.crop.getCropsCount.invalidate(),
+      ]);
     },
     onError: () => {
       toast.error("Failed", {
