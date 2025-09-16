@@ -1,9 +1,8 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { weatherRiskRouter } from "./routers/weatherRisk";
-import { farmingMethodRouter } from "./routers/farmingMethod";
 import { farmerRouter } from "./routers/farmer";
 import { farmRouter } from "./routers/farm";
 import { publicRouter } from "./routers/public";
+import { cropRouter } from "./routers/crop";
 
 /**
  * This is the primary router for your server.
@@ -14,8 +13,7 @@ export const appRouter = createTRPCRouter({
   public : publicRouter,
   farmer: farmerRouter,
   farm: farmRouter,
-  farmingMethod: farmingMethodRouter,
-  weatherRisk: weatherRiskRouter,
+  crop: cropRouter,
 });
 
 // export type definition of API

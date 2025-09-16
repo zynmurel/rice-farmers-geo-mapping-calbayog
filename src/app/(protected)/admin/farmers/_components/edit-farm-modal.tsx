@@ -13,6 +13,7 @@ import type { Farmer } from "@prisma/client";
 import {
   Check,
   ChevronsUpDown,
+  CornerLeftUp,
   Edit,
   Edit2,
   LoaderCircle,
@@ -45,7 +46,16 @@ import { toast } from "sonner";
 import { CoordinatesFieldArray } from "../create/_components/coordinate-farm-fields";
 import { ImageUploadField } from "../create/_components/image-upload";
 import { CheckBoxesForm } from "../create/_components/checkboxes-form";
-import { cn, formatCoordinatesToString } from "@/lib/utils";
+import {
+  cn,
+  formatCoordinatesToString,
+  optionLandCategory,
+  optionSoilType,
+  optionSourceOfIrrigation,
+  optionTenurialStatus,
+  optionTopography,
+  optionWeatherRisks,
+} from "@/lib/utils";
 import { barangays } from "@/lib/const/barangays";
 import {
   Command,
@@ -57,6 +67,7 @@ import {
 } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 function EditFarmModal() {
   const utils = api.useUtils();
@@ -68,12 +79,6 @@ function EditFarmModal() {
     },
     { enabled: !!id },
   );
-
-  const { data: farmingMethod, isLoading: farmingMethodIsLoading } =
-    api.farmingMethod.getFarmingMethods.useQuery();
-
-  const { data: weatherRisk, isLoading: weatherRiskIsLoading } =
-    api.weatherRisk.getWeatherRisks.useQuery();
 
   const { mutate, isPending } = api.farmer.updateFarm.useMutation({
     onSuccess: async () => {
@@ -119,11 +124,15 @@ function EditFarmModal() {
         address: farm.address,
         landArea: farm.landArea,
         farmerCount: farm.farmerCount,
-        farmingMethodIds: farm.FarmFarmingMethod.map(
-          (fm) => fm.farmingMethodId,
-        ),
-        weatherRiskIds: farm.FarmWeatherRisk.map((fm) => fm.weatherRiskId),
+        farmingMethodIds: [],
+        weatherRiskIds: [],
         coordinates: formatCoordinatesToString(coordinates),
+        land_category: farm.land_category as any[],
+        weather_risks: farm.weather_risks as any[],
+        source_of_irrigation: farm.source_of_irrigation as any[],
+        soil_type: farm.soil_type as any[],
+        topography: farm.topography as any[],
+        tenurial_status: farm.tenurial_status as any[],
       });
     }
   }, [farm]);
@@ -158,7 +167,7 @@ function EditFarmModal() {
                 </p>
               </div>
             ) : (
-              <div className="relative grid gap-3">
+              <div className="relative grid max-h-[80vh] gap-3 overflow-scroll p-1">
                 <div className="border-b pb-2">
                   <div className="flex w-full flex-row items-end justify-between">
                     <div className="-mt-1 flex flex-row items-center gap-3">
@@ -305,24 +314,266 @@ function EditFarmModal() {
                     )}
                   />
                 </div>
+                <Separator />
+                <FormField
+                  control={control}
+                  name={`land_category`}
+                  render={({ field }) => {
+                    const onChangeCheck = (value: string) => {
+                      const current = field.value || [];
+                      if (current.includes(value as any)) {
+                        field.onChange(
+                          current.filter((c: string) => c !== value),
+                        );
+                      } else {
+                        field.onChange([value]);
+                      }
+                    };
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Land Category</FormLabel>
+                        <div className="flex flex-col gap-5">
+                          <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                            {optionLandCategory.map((w) => (
+                              <div
+                                key={w.value}
+                                className="flex flex-row items-center gap-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    w.value as any,
+                                  )}
+                                  onCheckedChange={() => onChangeCheck(w.value)}
+                                />{" "}
+                                <p>{w.label}</p>
+                              </div>
+                            ))}
+                          </div>
 
-                <div className="grid gap-5 md:grid-cols-2">
-                  <CheckBoxesForm
-                    title="Land Category"
-                    control={control}
-                    name={`farmingMethodIds`}
-                    data={farmingMethod}
-                    isLoading={farmingMethodIsLoading}
-                  />
+                          {field.value?.includes("IR") && (
+                            <FormField
+                              control={control}
+                              name={`source_of_irrigation`}
+                              render={({ field }) => {
+                                const onChangeCheck = (value: string) => {
+                                  const current = field.value || [];
+                                  if (current.includes(value as any)) {
+                                    field.onChange(
+                                      current.filter(
+                                        (c: string) => c !== value,
+                                      ),
+                                    );
+                                  } else {
+                                    field.onChange([value]);
+                                  }
+                                };
+                                return (
+                                  <FormItem className="flex flex-col">
+                                    <FormLabel className="flex flex-row gap-0.5">
+                                      <CornerLeftUp className="size-4" /> Source
+                                      of Irrigation
+                                    </FormLabel>
+                                    <div className="flex">
+                                      <div className="flex w-auto flex-col gap-2 rounded-lg">
+                                        {optionSourceOfIrrigation.map((w) => (
+                                          <div
+                                            key={w.value}
+                                            className="flex flex-row items-center gap-2"
+                                          >
+                                            <Checkbox
+                                              checked={field.value?.includes(
+                                                w.value as any,
+                                              )}
+                                              onCheckedChange={() =>
+                                                onChangeCheck(w.value)
+                                              }
+                                            />{" "}
+                                            <p>{w.label}</p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          )}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <Separator />
 
-                  <CheckBoxesForm
-                    title="Weather Risks"
-                    control={control}
-                    name={`weatherRiskIds`}
-                    data={weatherRisk}
-                    isLoading={weatherRiskIsLoading}
-                  />
-                </div>
+                <FormField
+                  control={control}
+                  name={`weather_risks`}
+                  render={({ field }) => {
+                    const onChangeCheck = (value: string) => {
+                      const current = field.value || [];
+                      if (current.includes(value as any)) {
+                        field.onChange(
+                          current.filter((c: string) => c !== value),
+                        );
+                      } else {
+                        field.onChange([...current, value]);
+                      }
+                    };
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Weather Risks</FormLabel>
+                        <div className="flex">
+                          <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                            {optionWeatherRisks.map((w) => (
+                              <div
+                                key={w.value}
+                                className="flex flex-row items-center gap-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    w.value as any,
+                                  )}
+                                  onCheckedChange={() => onChangeCheck(w.value)}
+                                />{" "}
+                                <p>{w.label}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <Separator />
+
+                <FormField
+                  control={control}
+                  name={`soil_type`}
+                  render={({ field }) => {
+                    const onChangeCheck = (value: string) => {
+                      const current = field.value || [];
+                      if (current.includes(value as any)) {
+                        field.onChange(
+                          current.filter((c: string) => c !== value),
+                        );
+                      } else {
+                        field.onChange([value]);
+                      }
+                    };
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Soil Type</FormLabel>
+                        <div className="flex">
+                          <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                            {optionSoilType.map((w) => (
+                              <div
+                                key={w.value}
+                                className="flex flex-row items-center gap-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    w.value as any,
+                                  )}
+                                  onCheckedChange={() => onChangeCheck(w.value)}
+                                />{" "}
+                                <p>{w.label}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <Separator />
+
+                <FormField
+                  control={control}
+                  name={`topography`}
+                  render={({ field }) => {
+                    const onChangeCheck = (value: string) => {
+                      const current = field.value || [];
+                      if (current.includes(value as any)) {
+                        field.onChange(
+                          current.filter((c: string) => c !== value),
+                        );
+                      } else {
+                        field.onChange([value]);
+                      }
+                    };
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Topography</FormLabel>
+                        <div className="flex">
+                          <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                            {optionTopography.map((w) => (
+                              <div
+                                key={w.value}
+                                className="flex flex-row items-center gap-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    w.value as any,
+                                  )}
+                                  onCheckedChange={() => onChangeCheck(w.value)}
+                                />{" "}
+                                <p>{w.label}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <Separator />
+                <FormField
+                  control={control}
+                  name={`tenurial_status`}
+                  render={({ field }) => {
+                    const onChangeCheck = (value: string) => {
+                      const current = field.value || [];
+                      if (current.includes(value as any)) {
+                        field.onChange(
+                          current.filter((c: string) => c !== value),
+                        );
+                      } else {
+                        field.onChange([value]);
+                      }
+                    };
+                    return (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Tenurial Status</FormLabel>
+                        <div className="flex">
+                          <div className="flex w-auto flex-row items-center gap-5 rounded-lg">
+                            {optionTenurialStatus.map((w) => (
+                              <div
+                                key={w.value}
+                                className="flex flex-row items-center gap-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(
+                                    w.value as any,
+                                  )}
+                                  onCheckedChange={() => onChangeCheck(w.value)}
+                                />{" "}
+                                <p>{w.label}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <Separator />
 
                 {/* <ImageUploadField control={control} name={`images`} /> */}
                 {/* Coordinates */}

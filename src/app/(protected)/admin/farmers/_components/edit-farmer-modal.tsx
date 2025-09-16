@@ -16,6 +16,14 @@ import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateFarmerSchema } from "@/lib/schemas/create-farmer";
 import { Button } from "@/components/ui/button";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -34,6 +42,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function EditFarmerModal() {
   const utils = api.useUtils();
@@ -42,9 +51,12 @@ function EditFarmerModal() {
     parseAsString.withDefault(""),
   );
 
-  const { data: farmer, isLoading } = api.farmer.getFarmer.useQuery({
-    farmerId: id,
-  }, { enabled : !!id });
+  const { data: farmer, isLoading } = api.farmer.getFarmer.useQuery(
+    {
+      farmerId: id,
+    },
+    { enabled: !!id },
+  );
 
   const { mutate, isPending } = api.farmer.updateFarmer.useMutation({
     onSuccess: async () => {
@@ -97,17 +109,24 @@ function EditFarmerModal() {
       form.reset({
         id: id,
         firstName: farmer?.firstName,
+        middleName: farmer?.middleName || undefined,
         lastName: farmer?.lastName,
         phoneNumber: farmer?.phoneNumber,
         birthday: farmer?.birthday,
         addressLineOne: farmer?.addressLineOne,
+        rsbsaNo: farmer?.rsbsaNo,
+        gender: farmer?.gender,
+        civilStatus: farmer?.civilStatus,
+        spouse: farmer?.spouse || undefined,
+        indigenous: farmer?.indigenous || false,
+        tribe: farmer?.tribe || undefined,
       });
     }
   }, [farmer]);
 
   return (
     <Dialog open={!!id} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="min-w-3xl">
         <DialogHeader className="">
           <DialogTitle>Edit Farmer</DialogTitle>
           <DialogDescription className="-mt-2">
@@ -148,6 +167,20 @@ function EditFarmerModal() {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="middleName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Middle Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Juan" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="lastName"
@@ -156,6 +189,37 @@ function EditFarmerModal() {
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input placeholder="Dela Cruz" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="rsbsaNo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>RSBSA No.</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Input RSBSA" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="addressLineOne"
+                    render={({ field }) => (
+                      <FormItem className="col-span-1 lg:col-span-2">
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ex : Purok 7, Hamorawon, Calbayog City, Samar"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -183,7 +247,7 @@ function EditFarmerModal() {
                     name="birthday"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Birthday</FormLabel>
+                        <FormLabel>Date of Birth</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -218,15 +282,133 @@ function EditFarmerModal() {
                     )}
                   />
                 </div>
-                <div className="grid items-start gap-5">
+                <div className="grid items-start gap-5 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name="addressLineOne"
+                    name="gender"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address Line</FormLabel>
+                        <FormLabel>Gender</FormLabel>
                         <FormControl>
-                          <Input placeholder="123 Main Street" {...field} />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select gender" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {[
+                                { name: "Male", id: "MALE" },
+                                { name: "Female", id: "FEMALE" },
+                              ].map((bank, index) => (
+                                <SelectItem
+                                  key={index}
+                                  value={String(bank?.id)}
+                                >
+                                  {bank.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="civilStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Civil Status</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select civil status" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {[
+                                { name: "Single", id: "SINGLE" },
+                                { name: "Married", id: "MARRIED" },
+                                { name: "Widow/er", id: "WIDOW" },
+                                {
+                                  name: "Legally Separated",
+                                  id: "LEGALLY_SEPARATED",
+                                },
+                                { name: "Annuled", id: "ANNULED" },
+                              ].map((bank, index) => (
+                                <SelectItem
+                                  key={index}
+                                  value={String(bank?.id)}
+                                >
+                                  {bank.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="spouse"
+                    render={({ field }) => (
+                      <FormItem className="col-span-1 lg:col-span-2">
+                        <FormLabel>Spouse (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Input spouse name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="indigenous"
+                    render={({ field }) => (
+                      <FormItem className="col-span-full">
+                        <FormLabel>Indigenous Person</FormLabel>
+                        <div className="flex flex-row gap-10 py-1">
+                          <div className="flex flex-row items-center gap-3">
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={() => field.onChange(true)}
+                            />
+                            <p>Yes</p>
+                          </div>
+                          <div className="flex flex-row items-center gap-3">
+                            <Checkbox
+                              checked={!field.value}
+                              onCheckedChange={() => field.onChange(false)}
+                            />
+                            <p>No</p>
+                          </div>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tribe"
+                    render={({ field }) => (
+                      <FormItem className="col-span-1 -mt-3 max-w-80 lg:col-span-2">
+                        <FormControl>
+                          <Input
+                            placeholder="If yes, then input tribe"
+                            className=""
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

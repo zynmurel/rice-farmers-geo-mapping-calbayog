@@ -20,15 +20,15 @@ export const menu = [
       icon: House,
     },
     {
-      title: "Crops",
+      title: "Crops & Fertilizers",
       key : "crops",
       url: "/admin/crops",
       icon: Wheat,
     },
     {
-      title: "Crop Distribution",
-      key : "crop-distribution",
-      url: "/admin/crop-distribution",
+      title: "Distribution",
+      key : "distribution",
+      url: "/admin/distribution",
       icon: Handshake,
     },
     {

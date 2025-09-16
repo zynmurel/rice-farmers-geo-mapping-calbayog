@@ -16,10 +16,6 @@ async function main() {
   await seedOneAdmin()
   await seedFarmingMethod();
   await seedWeatherRisk();
-  await seedEnvironment();
-  await seedSeason();
-  await seedCropEstablishment();
-  await seedClassification()
 
   console.log("Seeder Complete!");
 }
@@ -60,74 +56,6 @@ const seedWeatherRisk = async () => {
     WEARTHER_RISK.map(
       async (data) =>
         await prisma.weatherRisk.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
-};
-
-const seedEnvironment = async () => {
-  const data = await Promise.all(
-    ENVIRONMENT.map(
-      async (data) =>
-        await prisma.environment.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
-};
-
-const seedSeason = async () => {
-  const data = await Promise.all(
-    SEASON.map(
-      async (data) =>
-        await prisma.season.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
-};
-
-const seedCropEstablishment = async () => {
-  const data = await Promise.all(
-    CROP_ESTABLISHMENT_TYPE.map(
-      async (data) =>
-        await prisma.cropEstablishmentType.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
-};
-
-const seedClassification = async () => {
-  const data = await Promise.all(
-    SEED_CLASSIFICATION.map(
-      async (data) =>
-        await prisma.seedClassification.upsert({
           where: {
             name: data,
           },

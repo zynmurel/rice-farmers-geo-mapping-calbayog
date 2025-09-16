@@ -35,32 +35,33 @@ model FarmerAccount {
 }
 
 model Farmer {
-    id             String         @id @default(uuid())
-    accountId      String?        @unique
-    profile        String?
-    phoneNumber    String         @unique
-    rsbsaNo        String         @default("TEST")
-    firstName      String
-    middleName     String?
-    lastName       String
-    birthday       DateTime
-    addressLineOne String
-    gender         gender         @default(MALE)
-    civilStatus    civil_status   @default(SINGLE)
-    spouse         String?
-    indigenous     Boolean        @default(false)
-    tribe          String? //if indigenous
-    createdAt      DateTime       @default(now())
-    updatedAt      DateTime?      @updatedAt
-    FarmerAccount  FarmerAccount? @relation(fields: [accountId], references: [id])
-    Farms          Farm[]
-    Distribution   Distribution[]
+    id                     String                   @id @default(uuid())
+    accountId              String?                  @unique
+    profile                String?
+    phoneNumber            String                   @unique
+    rsbsaNo                String                   @default("TEST")
+    firstName              String
+    middleName             String?
+    lastName               String
+    birthday               DateTime
+    addressLineOne         String
+    gender                 gender                   @default(MALE)
+    civilStatus            civil_status             @default(SINGLE)
+    spouse                 String?
+    indigenous             Boolean                  @default(false)
+    tribe                  String? //if indigenous
+    createdAt              DateTime                 @default(now())
+    updatedAt              DateTime?                @updatedAt
+    FarmerAccount          FarmerAccount?           @relation(fields: [accountId], references: [id])
+    Farms                  Farm[]
+    Distribution           Distribution[]
+    FertilizerDistribution FertilizerDistribution[]
 }
 
 model Farm {
-    id                   String                @id @default(uuid())
-    isPublished          Boolean               @default(true)
-    isFeatured           Boolean               @default(false)
+    id                   String              @id @default(uuid())
+    isPublished          Boolean             @default(true)
+    isFeatured           Boolean             @default(false)
     farmerId             String
     farmerCount          Int
     barangay             String
@@ -73,9 +74,9 @@ model Farm {
     soil_type            String[]
     topography           String[]
     tenurial_status      String[]
-    createdAt            DateTime              @default(now())
-    updatedAt            DateTime?             @updatedAt
-    Farmer               Farmer                @relation(fields: [farmerId], references: [id])
+    createdAt            DateTime            @default(now())
+    updatedAt            DateTime?           @updatedAt
+    Farmer               Farmer              @relation(fields: [farmerId], references: [id])
     FarmImage            FarmImage[]
     FarmFarmingMethod    FarmFarmingMethod[]
     FarmWeatherRisk      FarmWeatherRisk[]
@@ -133,40 +134,58 @@ enum civil_status {
 }
 
 model Crop {
-    id                   String              @id @default(uuid())
+    id                   String         @id @default(uuid())
     title                String
     variety              String //example NSIC Rc 222, NSIC Rc 160
     code                 String?
     source               String
-    seedClassificationId Int
     releaseAt            DateTime
-    createdAt            DateTime            @default(now())
-    updatedAt            DateTime?           @updatedAt
-    CropImage            CropImage[]
-    SeedClassification   SeedClassification  @relation(fields: [seedClassificationId], references: [id]) //example : "Inbred", "Hybrid", "Special Rice", "Glutinous"
+    season               String[] //Dry Season, Wet Season
+    establishment        String[] //Transplanted, Direct Wet Seeded, Direct Dry Seeded
+    environment          String[] //Irrigated Lowland, Rainfed Lowland, Cool Elevated, Upland, Saline
+    seed_classification  String //Inbred, Hybrid, Special Rice, Glutinous
+    createdAt            DateTime       @default(now())
+    updatedAt            DateTime?      @updatedAt
     Distribution         Distribution[]
-    CropEstablishment    CropEstablishment[]
-    CropSeason           CropSeason[]
-    CropEnvironment      CropEnvironment[]
+}
+
+model Fertilizer {
+    id                     String                   @id @default(uuid())
+    type                   String //Synthetic Fertilizer, Organic Fertilizer
+    name                   String
+    FertilizerDistribution FertilizerDistribution[]
+}
+
+model FertilizerDistribution {
+    id            String     @id @default(uuid())
+    farmerDetails String
+    farmerId      String
+    dateGiven     DateTime
+    quantity      Float
+    unit          UnitType   @default(KG)
+    Farmer        Farmer     @relation(fields: [farmerDetails], references: [id])
+    Fertilizer    Fertilizer @relation(fields: [farmerId], references: [id])
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime?  @updatedAt
 }
 
 model Distribution {
-    id            String           @id @default(uuid())
-    farmerDetails String
-    cropId        String
-    dateGiven     DateTime
-    type          DistributionType //SEED, SEEDLING
-    quantity      Float
-    unit          UnitType         @default(KG)
-    Farmer        Farmer           @relation(fields: [farmerDetails], references: [id])
-    Crop          Crop             @relation(fields: [cropId], references: [id])
-    createdAt     DateTime         @default(now())
-    updatedAt     DateTime?        @updatedAt
-    Planting      Planting[]
+    id        String           @id @default(uuid())
+    farmerId  String
+    cropId    String
+    dateGiven DateTime
+    type      DistributionType //SEED, SEEDLING
+    quantity  Float
+    unit      UnitType         @default(KG)
+    Farmer    Farmer           @relation(fields: [farmerId], references: [id])
+    Crop      Crop             @relation(fields: [cropId], references: [id])
+    createdAt DateTime         @default(now())
+    updatedAt DateTime?        @updatedAt
+    Planting  Planting[]
 }
 
 model Planting {
-    id                  String                @id @default(uuid())
+    id                  String       @id @default(uuid())
     distributionId      String
     establishmentTypeId Int
     dateOfSowing        DateTime
@@ -177,9 +196,8 @@ model Planting {
     moistureContent     Float? // e.g., 22.5 (percent)
     plantedQuantity     Float //kg
     harvestedQuantity   Float?
-    harvestedUnit       UnitType?             @default(KG)
-    EstablishmentType   CropEstablishmentType @relation(fields: [establishmentTypeId], references: [id]) //"Transplanted", "Direct Wet Seeded", "Direct Dry Seeded"
-    Distribution        Distribution          @relation(fields: [distributionId], references: [id])
+    harvestedUnit       UnitType?    @default(KG)
+    Distribution        Distribution @relation(fields: [distributionId], references: [id])
 }
 
 model FarmFarmingMethod {
@@ -200,33 +218,6 @@ model FarmWeatherRisk {
     @@id([farmId, weatherRiskId])
 }
 
-model CropEnvironment {
-    cropId        String
-    environmentId Int
-    Crop          Crop        @relation(fields: [cropId], references: [id])
-    Environment   Environment @relation(fields: [environmentId], references: [id])
-
-    @@id([cropId, environmentId])
-}
-
-model CropSeason {
-    cropId   String
-    seasonId Int
-    Crop     Crop   @relation(fields: [cropId], references: [id])
-    Season   Season @relation(fields: [seasonId], references: [id])
-
-    @@id([cropId, seasonId])
-}
-
-model CropEstablishment {
-    cropId                String
-    establishmentTypeId   Int
-    Crop                  Crop                  @relation(fields: [cropId], references: [id])
-    CropEstablishmentType CropEstablishmentType @relation(fields: [establishmentTypeId], references: [id])
-
-    @@id([cropId, establishmentTypeId])
-}
-
 model FarmImage {
     id         String   @id @default(uuid())
     farmId     String
@@ -236,14 +227,6 @@ model FarmImage {
     isFeatured Boolean?
     createdAt  DateTime @default(now())
     Farm       Farm     @relation(fields: [farmId], references: [id])
-}
-
-model CropImage {
-    id      String  @id @default(uuid())
-    cropId  String
-    url     String
-    caption String?
-    Crop    Crop    @relation(fields: [cropId], references: [id])
 }
 
 model FarmingMethod {
@@ -260,38 +243,6 @@ model WeatherRisk {
     name String  @unique
 
     FarmWeatherRisk FarmWeatherRisk[]
-}
-
-model Environment {
-    id   Int     @id @default(autoincrement())
-    icon String?
-    name String  @unique
-
-    CropEnvironment CropEnvironment[]
-}
-
-model Season {
-    id   Int     @id @default(autoincrement())
-    icon String?
-    name String  @unique
-
-    CropSeason CropSeason[]
-}
-
-model SeedClassification {
-    id   Int     @id @default(autoincrement())
-    icon String?
-    name String  @unique
-    Crop Crop[]
-}
-
-model CropEstablishmentType {
-    id       Int        @id @default(autoincrement())
-    icon     String?
-    name     String     @unique
-    Planting Planting[]
-
-    CropEstablishment CropEstablishment[]
 }
 
 enum DistributionType {

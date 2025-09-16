@@ -60,9 +60,22 @@ const updateFarmerSchema = z.object({
   id: z.string(),
   phoneNumber: phoneSchema,
   firstName: z.string().min(1, "First name is required"),
+  middleName: z.string().optional(),
   lastName: z.string().min(1, "Last name is required"),
+  rsbsaNo: z.string().min(1, "RSBSA number  is required"),
   birthday: z.date(),
   addressLineOne: z.string().min(1, "Address is required"),
+  gender: z.enum(["MALE", "FEMALE"]),
+  civilStatus: z.enum([
+    "SINGLE",
+    "MARRIED",
+    "WIDOW",
+    "LEGALLY_SEPARATED",
+    "ANNULED",
+  ]),
+  spouse: z.string().optional(),
+  indigenous: z.boolean(),
+  tribe: z.string().optional(),
 });
 
 const updateFarmSchema = z.object({
@@ -75,6 +88,18 @@ const updateFarmSchema = z.object({
   farmerCount: z.coerce.number().min(1),
   landArea: z.coerce.number().min(0.1),
   coordinates: coordinatesSchema,
+  land_category: z.array(z.enum(["IR", "RF", "UL"])),
+  weather_risks: z.array(z.enum(["MD", "FD"])),
+  source_of_irrigation: z.array(z.enum(["NIA_CIS", "DW", "SWIP", "STW"])),
+  soil_type: z
+    .array(z.enum(["CL", "SCL", "SiL", "Sal"]))
+    .min(1, { message: "Soil type is required" }),
+  topography: z
+    .array(z.enum(["FLAT", "ROLLING", "HILLY"]))
+    .min(1, { message: "Topography is required" }),
+  tenurial_status: z
+    .array(z.enum(["OWNER", "LESSEE", "TENANT"]))
+    .min(1, { message: "Tenurial status is required" }),
   // coordinates: z
   //   .array(z.object({ lat: z.coerce.number(), lng: z.coerce.number() }))
   //   .refine((coords) => coords.length === 0 || coords.length >= 3),
