@@ -134,24 +134,26 @@ enum civil_status {
 }
 
 model Crop {
-    id                   String         @id @default(uuid())
-    title                String
-    variety              String //example NSIC Rc 222, NSIC Rc 160
-    code                 String?
-    source               String
-    releaseAt            DateTime
-    season               String[] //Dry Season, Wet Season
-    establishment        String[] //Transplanted, Direct Wet Seeded, Direct Dry Seeded
-    environment          String[] //Irrigated Lowland, Rainfed Lowland, Cool Elevated, Upland, Saline
-    seed_classification  String //Inbred, Hybrid, Special Rice, Glutinous
-    createdAt            DateTime       @default(now())
-    updatedAt            DateTime?      @updatedAt
-    Distribution         Distribution[]
+    id                  String         @id @default(uuid())
+    title               String
+    variety             String //example NSIC Rc 222, NSIC Rc 160
+    code                String?
+    source              String
+    releaseAt           DateTime
+    season              String[] //Dry Season, Wet Season
+    establishment       String[] //Transplanted, Direct Wet Seeded, Direct Dry Seeded
+    environment         String[] //Irrigated Lowland, Rainfed Lowland, Cool Elevated, Upland, Saline
+    seed_classification String //Inbred, Hybrid, Special Rice, Glutinous
+    createdAt           DateTime       @default(now())
+    updatedAt           DateTime?      @updatedAt
+    Distribution        Distribution[]
 }
 
 model Fertilizer {
     id                     String                   @id @default(uuid())
     type                   String //Synthetic Fertilizer, Organic Fertilizer
+    type2                  String                   @default("LIQUID") //Solid, Liquid
+    type3                  String                   @default("NITROGEN_FERTILIZER") //...
     name                   String
     FertilizerDistribution FertilizerDistribution[]
 }

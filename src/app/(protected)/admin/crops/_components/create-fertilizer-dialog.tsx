@@ -34,7 +34,11 @@ import {
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import type { Fertilizer } from "@prisma/client";
-import { optionFertilizerType } from "@/lib/fertilizerUtils";
+import {
+  optionFertilizerType,
+  optionFertilizerType2,
+  optionsFertilizerTypes3,
+} from "@/lib/fertilizerUtils";
 
 export function UpsertFertilizer({
   fertilizers,
@@ -61,7 +65,10 @@ export function UpsertFertilizer({
     onSuccess: async () => {
       toast.success(`Fertilizer ${isCreate ? "created" : "updated"}`);
       setId(null);
-      await Promise.all([utils.fertilizer.getFertilizer.invalidate(),utils.fertilizer.getFertilizerCount.invalidate()]);
+      await Promise.all([
+        utils.fertilizer.getFertilizer.invalidate(),
+        utils.fertilizer.getFertilizerCount.invalidate(),
+      ]);
     },
     onError: () => {
       toast.error("Failed", {
@@ -77,6 +84,8 @@ export function UpsertFertilizer({
       type: undefined,
     },
   });
+
+  const [type, type2] = form.watch(["type", "type2"]);
 
   const isCreate = id === "create";
 
@@ -97,6 +106,8 @@ export function UpsertFertilizer({
       form.reset({
         name: activeFertilizer.name,
         type: activeFertilizer.type,
+        type2: activeFertilizer.type2,
+        type3: activeFertilizer.type3,
       });
     }
   }, [fertilizers, id]);
@@ -117,6 +128,108 @@ export function UpsertFertilizer({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid gap-1">
+              <div className="grid grid-cols-2 gap-5">
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select Organic or Synthetic</FormLabel>
+                      <Select
+                        onValueChange={(e) => {
+                          field.onChange(e);
+                          form.setValue("type3", "");
+                        }}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {optionFertilizerType.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select Solid or Liquid</FormLabel>
+                      <Select
+                        onValueChange={(e) => {
+                          field.onChange(e);
+                          form.setValue("type3", "");
+                        }}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {optionFertilizerType2.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type3"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Select Fertilizer Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full"
+                            disabled={!type || !type2}
+                          >
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {optionsFertilizerTypes3
+                            .filter(
+                              (opt) =>
+                                opt.parent1 === type && opt.parent2 === type2,
+                            )
+                            .map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             <FormField
               control={form.control}
               name="name"
@@ -126,31 +239,6 @@ export function UpsertFertilizer({
                   <FormControl>
                     <Input placeholder="Enter fertilizer name" {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Fertilizer Type</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select fertilizer type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {optionFertilizerType.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

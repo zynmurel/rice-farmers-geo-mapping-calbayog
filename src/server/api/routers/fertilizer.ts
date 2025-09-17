@@ -7,6 +7,8 @@ export const fertilizerRouter = createTRPCRouter({
       z.object({
         id: z.string().optional(),
         type: z.string(),
+        type2: z.string(),
+        type3: z.string(),
         name: z.string(),
       }),
     )

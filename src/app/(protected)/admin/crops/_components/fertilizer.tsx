@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { UpsertFertilizer } from "./create-fertilizer-dialog";
-import { fertilizerTypes } from "@/lib/fertilizerUtils";
+import { fertilizerTypes, fertilizerTypes2 } from "@/lib/fertilizerUtils";
 import { Badge } from "@/components/ui/badge";
 
 function Fertilizer() {
@@ -100,13 +100,23 @@ function Fertilizer() {
                   <TableRow key={fertilizer.id}>
                     <TableCell className="pl-5">{fertilizer.name}</TableCell>
                     <TableCell>
-                      <Badge>
-                        {
-                          fertilizerTypes[
-                            fertilizer.type as keyof typeof fertilizerTypes
-                          ]
-                        }
-                      </Badge>
+                      <div className="flex flex-row gap-1">
+                        <Badge>
+                          {
+                            fertilizerTypes[
+                              fertilizer.type as keyof typeof fertilizerTypes
+                            ]
+                          }
+                        </Badge>
+                        <Badge className="bg-sidebar-accent">
+                          {
+                            fertilizerTypes2[
+                              fertilizer.type2 as keyof typeof fertilizerTypes2
+                            ]
+                          }
+                        </Badge>
+                        <Badge variant={"outline"} className=" capitalize">{fertilizer.type3.toLowerCase().replace(/_/g, " ")}</Badge>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-row items-center justify-center gap-1">
