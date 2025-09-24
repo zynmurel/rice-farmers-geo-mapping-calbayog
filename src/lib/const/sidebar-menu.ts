@@ -26,7 +26,7 @@ export const menu = [
       icon: Wheat,
     },
     {
-      title: "Distribution",
+      title: "Distribution & Crop Planting",
       key : "distribution",
       url: "/admin/distribution",
       icon: Handshake,

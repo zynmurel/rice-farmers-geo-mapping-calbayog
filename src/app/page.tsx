@@ -8,15 +8,18 @@ import { Map } from "lucide-react";
 import { useRouter } from "next/navigation";
 import FarmerLoginModal from "./(public)/_components.tsx/farmer-login-modal";
 import dynamic from "next/dynamic";
+import FarmerRegisterModal from "./(public)/_components.tsx/farmer-register-modal";
 
 const MapView = dynamic(() => import("./_components/map"), { ssr: false });
 function Page() {
   const router = useRouter();
   const [active, setActive] = useState("#home");
   const [open, openModal] = useState<null | "register" | "login">(null)
+  console.log(open)
   return (
     <div className="bg-background flex min-h-screen w-full flex-col items-center text-white">
       <FarmerLoginModal open={open} openModal={openModal}/>
+      <FarmerRegisterModal open={open} openModal={openModal}/>
       <div className="bg-sidebar flex w-full items-center justify-center p-3 md:p-5">
         <div className="flex w-full max-w-[1300px] flex-row items-center gap-5">
           <Image

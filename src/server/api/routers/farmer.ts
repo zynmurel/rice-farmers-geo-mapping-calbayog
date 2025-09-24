@@ -74,8 +74,6 @@ export const farmerRouter = createTRPCRouter({
         where: { farmerId: input.farmerId },
         include: {
           FarmImage: true,
-          FarmFarmingMethod: { include: { FarmingMethod: true } },
-          FarmWeatherRisk: { include: { WeatherRisk: true } },
         },
       });
       return farms;
@@ -92,8 +90,6 @@ export const farmerRouter = createTRPCRouter({
         include: {
           Farmer: true,
           FarmImage: true,
-          FarmFarmingMethod: { include: { FarmingMethod: true } },
-          FarmWeatherRisk: { include: { WeatherRisk: true } },
         },
       });
       return farms;
@@ -160,20 +156,6 @@ export const farmerRouter = createTRPCRouter({
           ...rest,
           ...IsFeatured,
           coordinates: coordinatesToJson || [],
-          FarmWeatherRisk: {
-            deleteMany: {},
-            createMany: {
-              data: weatherRiskIds.map((wr) => ({ weatherRiskId: wr })),
-            },
-          },
-          FarmFarmingMethod: {
-            deleteMany: {},
-            createMany: {
-              data: farmingMethodIds.map((fm) => ({
-                farmingMethodId: fm,
-              })),
-            },
-          },
         },
       });
     }),

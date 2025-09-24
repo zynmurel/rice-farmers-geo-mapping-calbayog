@@ -17,6 +17,7 @@ export const cropRouter = createTRPCRouter({
         establishment: z.array(z.string()),
         environment: z.array(z.string()),
         seed_classification: z.string(),
+        daysOfSowing: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

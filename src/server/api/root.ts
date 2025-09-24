@@ -4,6 +4,8 @@ import { farmRouter } from "./routers/farm";
 import { publicRouter } from "./routers/public";
 import { cropRouter } from "./routers/crop";
 import { fertilizerRouter } from "./routers/fertilizer";
+import { distributionRouter } from "./routers/distribution";
+import { newsRouter } from "./routers/news";
 
 /**
  * This is the primary router for your server.
@@ -11,11 +13,13 @@ import { fertilizerRouter } from "./routers/fertilizer";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  public : publicRouter,
+  public: publicRouter,
   farmer: farmerRouter,
   farm: farmRouter,
   crop: cropRouter,
   fertilizer: fertilizerRouter,
+  distribution: distributionRouter,
+  news : newsRouter
 });
 
 // export type definition of API

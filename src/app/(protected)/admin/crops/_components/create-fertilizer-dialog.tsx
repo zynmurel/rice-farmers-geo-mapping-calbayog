@@ -10,7 +10,6 @@ import { parseAsString, useQueryState } from "nuqs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -31,7 +30,7 @@ import {
   fertilizerSchema,
   type FertilizerFormValues,
 } from "@/lib/schemas/fertilizer";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import type { Fertilizer } from "@prisma/client";
 import {
@@ -46,20 +45,13 @@ export function UpsertFertilizer({
   fertilizers: Fertilizer[] | undefined;
 }) {
   const utils = api.useUtils();
-  const currentYear = new Date().getFullYear();
-
-  // Generate list of years (1900 → current year)
-  const years = useMemo(() => {
-    return Array.from(
-      { length: currentYear - 1900 + 1 },
-      (_, i) => currentYear - i,
-    );
-  }, [currentYear]);
 
   const [id, setId] = useQueryState(
     "upsert-fertilizer",
     parseAsString.withDefault(""),
   );
+
+  const isCreate = id === "create";
 
   const { mutate, isPending } = api.fertilizer.upsertFertilizer.useMutation({
     onSuccess: async () => {
@@ -86,8 +78,6 @@ export function UpsertFertilizer({
   });
 
   const [type, type2] = form.watch(["type", "type2"]);
-
-  const isCreate = id === "create";
 
   const onSubmit = (data: FertilizerFormValues) => {
     mutate({
@@ -249,7 +239,13 @@ export function UpsertFertilizer({
                 Cancel
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating..." : "Create"}
+                {isPending
+                  ? isCreate
+                    ? "Creating..."
+                    : "Updating..."
+                  : isCreate
+                    ? "Create"
+                    : "Update"}
               </Button>
             </div>
           </form>

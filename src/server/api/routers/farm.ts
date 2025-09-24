@@ -57,16 +57,6 @@ export const farmRouter = createTRPCRouter({
           take,
           include: {
             Farmer: true,
-            FarmFarmingMethod: {
-              include: {
-                FarmingMethod: true,
-              },
-            },
-            FarmWeatherRisk: {
-              include: {
-                WeatherRisk: true,
-              },
-            },
           },
         });
       },

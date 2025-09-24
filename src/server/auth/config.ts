@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 import { db } from "@/server/db";
 import type { UserType } from "@/types/config";
+import { formatName } from "@/lib/distributionUtils";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -46,23 +47,47 @@ export const authConfig = {
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
 
-        let user
-
-        if(credentials.type === "ADMIN"){
+        let user;
+        let name;
+        console.log(credentials.type);
+        if (credentials.type === "ADMIN") {
           user = await db.admin.findUnique({
             where: { username: credentials.username as string },
           });
+          name = user?.adminName;
+        }
+
+        if (credentials.type === "FARMER") {
+          user = await db.farmerAccount.findFirst({
+            where: {
+              OR: [
+                {
+                  Farmer: {
+                    phoneNumber: credentials.username as string,
+                  },
+                },
+                {
+                  username: credentials.username as string,
+                },
+              ],
+            },
+            include: { Farmer: true },
+          });
+          name = user?.Farmer ? formatName(user?.Farmer) : "";
         }
 
         if (!user) return null;
 
-        const isValid = await bcrypt.compare(credentials.password as string, user.password);
+        const isValid = await bcrypt.compare(
+          credentials.password as string,
+          user.password,
+        );
         if (!isValid) return null;
         return {
           id: user.id,
-          name : user.adminName,
-          email : user.username,
-          type : credentials.type as UserType
+          name: name || "",
+          email: user.username,
+          type: credentials.type as UserType,
         };
       },
     }),
@@ -74,15 +99,15 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-      token.id = user.id;           // store user ID
-      token.type = user.type as UserType 
+        token.id = user.id; // store user ID
+        token.type = user.type as UserType;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
-      session.user.id = token.id as string;
-      session.user.type = token.type as UserType; // ✅ make type available in session
+        session.user.id = token.id as string;
+        session.user.type = token.type as UserType; // ✅ make type available in session
       }
 
       return session;

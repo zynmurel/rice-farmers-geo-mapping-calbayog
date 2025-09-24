@@ -20,7 +20,7 @@ function Page() {
     >
       <div>
         <Tabs value={activeTab} onValueChange={(e) => setActiveTab(e as any)}>
-          <TabsList className="w-[400px] cursor-pointer bg-slate-200">
+          <TabsList className="w-[400px] cursor-pointer bg-slate-100">
             <TabsTrigger className="cursor-pointer" value="crops">
               Crops
             </TabsTrigger>

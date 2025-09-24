@@ -55,6 +55,8 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
     parseAsString.withDefault(""),
   );
 
+  const isCreate = id === "create";
+
   const { mutate, isPending } = api.crop.upsertCrop.useMutation({
     onSuccess: async () => {
       toast.success(`Crop ${isCreate ? "created" : "updated"}`);
@@ -86,8 +88,6 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
     },
   });
 
-  const isCreate = id === "create";
-
   const onSubmit = (data: CropFormValues) => {
     mutate({
       id: isCreate ? undefined : id,
@@ -112,6 +112,7 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
         establishment: activeCrop.establishment,
         environment: activeCrop.environment,
         seed_classification: activeCrop.seed_classification,
+        daysOfSowing: activeCrop.daysOfSowing,
       });
     }
   }, [crops, id]);
@@ -138,9 +139,9 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter crop title" {...field} />
+                      <Input placeholder="Enter crop name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -242,6 +243,19 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="daysOfSowing"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Days of Sowing</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter days of sowing " {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -361,7 +375,7 @@ export function UpsertCrop({ crops }: { crops: Crop[] | undefined }) {
                 Cancel
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating..." : "Create"}
+                {isPending ? (isCreate ? "Creating..." : "Updating...") : (isCreate ? "Create" : "Update")}
               </Button>
             </div>
           </form>
