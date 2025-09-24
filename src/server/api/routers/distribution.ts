@@ -148,7 +148,6 @@ export const distributionRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { Distributions, barangay, ...rest } = input;
-      let farmerId = null;
       try {
         const distributionBatch = await ctx.db.distributionBatch.create({
           data: rest,

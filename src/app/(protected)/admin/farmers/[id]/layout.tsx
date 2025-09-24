@@ -147,7 +147,7 @@ function Farmer({ children }: { children: JSX.Element }) {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="dark:bg-background flex flex-row items-center gap-2 rounded-lg border bg-white/95 p-3 px-5">
+                  <div className="dark:bg-background flex flex-row items-center gap-2 rounded-lg border bg-card/95 p-3 px-5">
                     <House className="text-foreground/70 size-7" />
                     <div className="flex flex-col">
                       <p className="text-foreground/70 text-xs">

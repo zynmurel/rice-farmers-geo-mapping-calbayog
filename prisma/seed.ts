@@ -14,8 +14,6 @@ const SEED_CLASSIFICATION = ["Inbred", "Hybrid", "Special Rice", "Glutinous"]
 async function main() {
   // Example: Create a default farmer
   await seedOneAdmin()
-  await seedFarmingMethod();
-  await seedWeatherRisk();
 
   console.log("Seeder Complete!");
 }
@@ -32,40 +30,6 @@ const seedOneAdmin = async () => {
         password  
     }
   })
-};
-
-const seedFarmingMethod = async () => {
-  const data = await Promise.all(
-    FARMING_METHOD.map(
-      async (data) =>
-        await prisma.farmingMethod.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
-};
-
-const seedWeatherRisk = async () => {
-  const data = await Promise.all(
-    WEARTHER_RISK.map(
-      async (data) =>
-        await prisma.weatherRisk.upsert({
-          where: {
-            name: data,
-          },
-          create: { name: data },
-          update: { name: data },
-        }),
-    ),
-  );
-  console.log("Farming Method Seeded!🌱");
-  return data;
 };
 
 main()

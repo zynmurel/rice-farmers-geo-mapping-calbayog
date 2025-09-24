@@ -57,7 +57,7 @@ function DistributionTable() {
   return (
     <div className="rounded-lg border">
       <Table>
-        <TableHeader className="bg-slate-100">
+        <TableHeader className="">
           <TableRow>
             <TableHead className="w-[130px] pl-4 text-center">
               Year & Season

@@ -253,10 +253,7 @@ model News {
 model NewsImage {
     id         String   @id @default(uuid())
     newsId     Int
-    url        String[]
-    caption    String?
-    order      Int?
-    isFeatured Boolean?
+    url        String
     createdAt  DateTime @default(now())
     News       News     @relation(fields: [newsId], references: [id])
 }

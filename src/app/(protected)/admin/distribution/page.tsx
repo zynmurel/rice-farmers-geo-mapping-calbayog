@@ -223,7 +223,7 @@ function Page() {
         </Card>
         <Card className="px-5 py-5">
           <Tabs value={activeTab} onValueChange={(e) => setActiveTab(e as any)}>
-            <TabsList className="w-[400px] cursor-pointer bg-slate-100">
+            <TabsList className="w-[400px] cursor-pointer ">
               <TabsTrigger className="cursor-pointer" value="crop-planting">
                 Distribution
               </TabsTrigger>

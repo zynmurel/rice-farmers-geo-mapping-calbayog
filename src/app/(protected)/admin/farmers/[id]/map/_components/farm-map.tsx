@@ -2,11 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { getCenterOfCoords, getColor } from "@/lib/utils";
 import type {
   Farm,
-  FarmFarmingMethod,
   FarmImage,
-  FarmingMethod,
-  FarmWeatherRisk,
-  WeatherRisk,
 } from "@prisma/client";
 import { ImageOff } from "lucide-react";
 import Image from "next/image";
@@ -46,14 +42,6 @@ export default function FarmMap({
 }: {
   farms:
     | (Farm & {
-        FarmFarmingMethod: (FarmFarmingMethod & {
-          FarmingMethod: FarmingMethod;
-        })[];
-      } & {
-        FarmWeatherRisk: (FarmWeatherRisk & {
-          WeatherRisk: WeatherRisk;
-        })[];
-      } & {
         FarmImage: FarmImage[];
       })[]
     | undefined;

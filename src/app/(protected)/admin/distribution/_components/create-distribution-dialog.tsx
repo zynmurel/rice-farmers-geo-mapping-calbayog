@@ -164,7 +164,7 @@ export function CreateDistributionModal() {
 
   return (
     <Dialog open={openCreate} onOpenChange={() => setOpenCreate(false)}>
-      <DialogContent className="min-w-4xl bg-white">
+      <DialogContent className="min-w-4xl bg-card">
         <DialogHeader className="gap-y-1">
           <DialogTitle>New Distribution</DialogTitle>
           <DialogDescription>

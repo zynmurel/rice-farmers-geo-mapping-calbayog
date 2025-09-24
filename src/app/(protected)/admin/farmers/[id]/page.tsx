@@ -175,59 +175,6 @@ function Farms() {
                         </p>
                       </div>
                     </div>
-                    {farm.FarmFarmingMethod.length ? (
-                      <div className="border-chart-5 border-l-[14px] pl-2">
-                        <p className="text-xs uppercase">FARMING METHOD</p>
-                        <div className="border-primary flex flex-col gap-1">
-                          {farm.FarmFarmingMethod.map((fm) => (
-                            <>
-                              <div className="flex flex-row items-center gap-2 text-base font-bold uppercase">
-                                {fm.FarmingMethod.name === "Organic Farming" ? (
-                                  <Sprout strokeWidth={2.5} />
-                                ) : fm.FarmingMethod.name ===
-                                  "Rain-fed Farming" ? (
-                                  <CloudHail strokeWidth={2.5} />
-                                ) : fm.FarmingMethod.name === "Traditional" ? (
-                                  <Waypoints strokeWidth={2.5} />
-                                ) : (
-                                  <Component />
-                                )}
-                                {fm.FarmingMethod.name}
-                              </div>
-                            </>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
-
-                    {farm.FarmFarmingMethod.length ? (
-                      <div className="border-chart-4 border-l-[14px] pl-2">
-                        <p className="text-xs uppercase">WEATHER RISKS</p>
-                        <div className="border-primary flex flex-col gap-1">
-                          {optionWeatherRisks.map((fm) => (
-                            <>
-                              <div className="flex flex-row items-center gap-2 text-base font-bold uppercase">
-                                {fm.label === "Flood-prone" ? (
-                                  <Waves strokeWidth={2.5} />
-                                ) : fm.label === "Typehoon Prone" ? (
-                                  <CloudRain strokeWidth={2.5} />
-                                ) : fm.label ===
-                                  "Moderate Drought" ? (
-                                  <RailSymbol strokeWidth={2.5} />
-                                ) : (
-                                  <Component />
-                                )}
-                                {fm.label}
-                              </div>
-                            </>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <></>
-                    )}
                   </div>
                   <div className="mt-5 flex flex-col gap-1">
                     <p className="top-2 left-2 text-xs font-bold uppercase">
