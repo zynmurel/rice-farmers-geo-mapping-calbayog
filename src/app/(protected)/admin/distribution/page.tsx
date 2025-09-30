@@ -224,17 +224,17 @@ function Page() {
         <Card className="px-5 py-5">
           <Tabs value={activeTab} onValueChange={(e) => setActiveTab(e as any)}>
             <TabsList className="w-[400px] cursor-pointer ">
-              <TabsTrigger className="cursor-pointer" value="crop-planting">
+              <TabsTrigger className="cursor-pointer" value="distribution">
                 Distribution
               </TabsTrigger>
-              <TabsTrigger className="cursor-pointer" value="distribution">
+              <TabsTrigger className="cursor-pointer" value="crop-planting">
                 Planting History
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="crop-planting">
+            <TabsContent value="distribution">
               <DistributionTable />
             </TabsContent>
-            <TabsContent value="distribution"></TabsContent>
+            <TabsContent value="crop-planting"></TabsContent>
           </Tabs>
         </Card>
       </div>

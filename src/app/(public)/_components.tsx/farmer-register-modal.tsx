@@ -34,6 +34,7 @@ function FarmerRegisterModal({
     "send-otp",
   );
   const onClose = () => openModal(null);
+  const onOpenLogin = () => openModal("login");
 
   const { mutate: sendOtp, isPending: sendOtpIsPending } =
     api.public_register.sendOTP.useMutation({
@@ -179,7 +180,7 @@ function FarmerRegisterModal({
               ) : (
                 <div></div>
               )}
-              <RegisterForm phoneNumber={phoneNumber} onClose={onClose} />
+              <RegisterForm phoneNumber={phoneNumber} onClose={onOpenLogin} />
             </div>
           )}
         </DialogHeader>

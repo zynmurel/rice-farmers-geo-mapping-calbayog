@@ -37,10 +37,10 @@ export const menu = [
       url: "/admin/news",
       icon: Newspaper,
     },
-    {
-      title: "Settings",
-      key : "settings",
-      url: "/admin/settings",
-      icon: Settings,
-    }
+    // {
+    //   title: "Settings",
+    //   key : "settings",
+    //   url: "/admin/settings",
+    //   icon: Settings,
+    // }
   ]

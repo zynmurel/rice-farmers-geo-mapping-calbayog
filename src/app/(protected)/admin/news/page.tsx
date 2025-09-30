@@ -105,7 +105,7 @@ function NewsPage() {
                   return (
                     <div key={n.id}>
                       <div className="flex flex-row gap-5">
-                        <div className="aspect-square size-60 flex-none overflow-hidden">
+                        <div className="aspect-square size-52 flex-none overflow-hidden">
                           {n.NewsImage[0]?.url ? (
                             <Image
                               width={1000}
@@ -118,16 +118,16 @@ function NewsPage() {
                             <div className="aspect-square h-full"></div>
                           )}
                         </div>
-                        <div className=" flex flex-col h-60">
+                        <div className=" flex flex-col">
                           <div>
+                          <p className=" mt-auto text-sm opacity-50">Posted : {format(n.postedAt, "PPP")}</p>
                             <p className="text-xl font-bold">{n.title}</p>
                             <p className="xl:max-w-1/2">{n.content}</p>
-                            <p className=" text-green-600 font-semibold text-sm mt-2 cursor-pointer">View more details</p>
+                            {/* <p className=" text-green-600 font-semibold text-sm mt-2 cursor-pointer">View more details</p> */}
                           </div>
-                          <p className=" mt-auto text-sm opacity-50">Posted : {format(n.postedAt, "PPP")}</p>
                         </div>
                       </div>
-                      <Separator className="mt-5" />
+                      <Separator className="my-5" />
                     </div>
                   );
                 })}

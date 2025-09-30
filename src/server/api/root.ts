@@ -7,6 +7,8 @@ import { fertilizerRouter } from "./routers/fertilizer";
 import { distributionRouter } from "./routers/distribution";
 import { newsRouter } from "./routers/news";
 import { publicRegisterRouter } from "./routers/public_register";
+import { farmerNewsRouter } from "./routers/farmer/news";
+import { farmerFarmsRouter } from "./routers/farmer/farms";
 
 /**
  * This is the primary router for your server.
@@ -21,7 +23,11 @@ export const appRouter = createTRPCRouter({
   crop: cropRouter,
   fertilizer: fertilizerRouter,
   distribution: distributionRouter,
-  news : newsRouter
+  news: newsRouter,
+  Farmer: {
+    news: farmerNewsRouter,
+    farms: farmerFarmsRouter,
+  },
 });
 
 // export type definition of API
