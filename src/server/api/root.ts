@@ -6,6 +6,7 @@ import { cropRouter } from "./routers/crop";
 import { fertilizerRouter } from "./routers/fertilizer";
 import { distributionRouter } from "./routers/distribution";
 import { newsRouter } from "./routers/news";
+import { publicRegisterRouter } from "./routers/public_register";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ import { newsRouter } from "./routers/news";
  */
 export const appRouter = createTRPCRouter({
   public: publicRouter,
+  public_register: publicRegisterRouter,
   farmer: farmerRouter,
   farm: farmRouter,
   crop: cropRouter,

@@ -50,6 +50,9 @@ model Farmer {
     spouse         String?
     indigenous     Boolean        @default(false)
     tribe          String? //if indigenous
+    otp            Int?
+    otpCreatedAt   DateTime?
+    isVerified     Boolean        @default(false)
     createdAt      DateTime       @default(now())
     updatedAt      DateTime?      @updatedAt
     FarmerAccount  FarmerAccount? @relation(fields: [accountId], references: [id])
@@ -57,10 +60,10 @@ model Farmer {
 }
 
 model Farm {
-    id                   String          @id @default(uuid())
-    index                Int             @default(autoincrement())
-    isPublished          Boolean         @default(true)
-    isFeatured           Boolean         @default(false)
+    id                   String      @id @default(uuid())
+    index                Int         @default(autoincrement())
+    isPublished          Boolean     @default(true)
+    isFeatured           Boolean     @default(false)
     farmerId             String
     farmerCount          Int
     barangay             String
@@ -73,9 +76,9 @@ model Farm {
     soil_type            String[]
     topography           String[]
     tenurial_status      String[]
-    createdAt            DateTime        @default(now())
-    updatedAt            DateTime?       @updatedAt
-    Farmer               Farmer          @relation(fields: [farmerId], references: [id])
+    createdAt            DateTime    @default(now())
+    updatedAt            DateTime?   @updatedAt
+    Farmer               Farmer      @relation(fields: [farmerId], references: [id])
     FarmImage            FarmImage[]
 
     Distribution Distribution[]
@@ -166,8 +169,8 @@ model CropDistribution {
     quantity       Float
     type           DistributionType @default(SEED)
     unit           UnitType         @default(KG)
-    Crop           Crop?             @relation(fields: [cropId], references: [id])
-    Distribution   Distribution    @relation(fields: [distributionId], references: [id], onDelete: Cascade)
+    Crop           Crop?            @relation(fields: [cropId], references: [id])
+    Distribution   Distribution     @relation(fields: [distributionId], references: [id], onDelete: Cascade)
     Planting       Planting[]
 }
 
@@ -183,14 +186,14 @@ model FertilizerDistribution {
 }
 
 model DistributionBatch {
-    id           Int            @id @default(autoincrement())
-    year         String //Year of season
-    season       String // DRY or WET season
-    who          String
-    what         String
-    when         String
-    where        String
-    why          String
+    id            Int            @id @default(autoincrement())
+    year          String //Year of season
+    season        String // DRY or WET season
+    who           String
+    what          String
+    when          String
+    where         String
+    why           String
     Distributions Distribution[]
 }
 
@@ -251,11 +254,11 @@ model News {
 }
 
 model NewsImage {
-    id         String   @id @default(uuid())
-    newsId     Int
-    url        String
-    createdAt  DateTime @default(now())
-    News       News     @relation(fields: [newsId], references: [id])
+    id        String   @id @default(uuid())
+    newsId    Int
+    url       String
+    createdAt DateTime @default(now())
+    News      News     @relation(fields: [newsId], references: [id])
 }
 
 enum DistributionType {
