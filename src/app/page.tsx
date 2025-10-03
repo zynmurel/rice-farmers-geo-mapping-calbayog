@@ -9,17 +9,19 @@ import { useRouter } from "next/navigation";
 import FarmerLoginModal from "./(public)/_components.tsx/farmer-login-modal";
 import dynamic from "next/dynamic";
 import FarmerRegisterModal from "./(public)/_components.tsx/farmer-register-modal";
+import { api } from "@/trpc/react";
 
 const MapView = dynamic(() => import("./_components/map"), { ssr: false });
 function Page() {
   const router = useRouter();
   const [active, setActive] = useState("#home");
-  const [open, openModal] = useState<null | "register" | "login">(null)
-  console.log(open)
+  const [open, openModal] = useState<null | "register" | "login">(null);
+  const { data: featured } = api.public.getFeaturedFarms.useQuery();
+  const { data: published } = api.public.getPublishedFarm.useQuery();
   return (
     <div className="bg-background flex min-h-screen w-full flex-col items-center text-white">
-      <FarmerLoginModal open={open} openModal={openModal}/>
-      <FarmerRegisterModal open={open} openModal={openModal}/>
+      <FarmerLoginModal open={open} openModal={openModal} />
+      <FarmerRegisterModal open={open} openModal={openModal} />
       <div className="bg-sidebar flex w-full items-center justify-center p-3 md:p-5">
         <div className="flex w-full max-w-[1300px] flex-row items-center gap-5">
           <Image
@@ -78,7 +80,9 @@ function Page() {
                   key={data.title}
                   className={`tracking-widest`}
                   href={data.path}
-                  onClick={() => openModal(data.title === "LOGIN" ? "login" : "register")}
+                  onClick={() =>
+                    openModal(data.title === "LOGIN" ? "login" : "register")
+                  }
                 >
                   {data.title}
                 </Link>
@@ -117,22 +121,43 @@ function Page() {
                   <Map className="size-5 md:size-6" />
                   View Map
                 </Button>
-              </div>
-            </div>
-            <div className="text-foreground grid items-center justify-center py-5">
-              <div className="w-full font-bold">
-                <p className="md:text-xl">FEATURED FARMS</p>
-                <div className="flex w-full max-w-[96vw] flex-row flex-nowrap items-center gap-2 overflow-auto xl:max-w-[1300px]">
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                  <div className="bg-primary/40 h-48 w-64 flex-none rounded-2xl shadow md:h-64 md:w-64"></div>
-                </div>
+                {featured?.length ? (
+                  <div className="text-foreground grid w-full items-center py-5">
+                    <p className="w-full text-start font-bold text-white md:text-xl">
+                      FEATURED FARMS
+                    </p>
+                    <div className="flex w-full max-w-[96vw] flex-row flex-nowrap items-center gap-2 overflow-auto xl:max-w-[1300px]">
+                      {featured.map((farm) => (
+                        <div
+                          key={farm.id}
+                          className="bg-background/50 relative flex h-[200px] w-[300px] flex-none flex-col items-center justify-end rounded-lg p-3"
+                        >
+                          {farm.FarmImage?.[0] ? (
+                            <Image
+                              width={300}
+                              height={200}
+                              alt="farm-image"
+                              src={farm.FarmImage?.[0]?.url}
+                              className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 object-cover brightness-[.7] sepia-20"
+                            />
+                          ) : (
+                            <div className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 bg-white/10" />
+                          )}
+                          <div className="bg-background/70 z-10 flex w-full flex-col p-2">
+                            <p className="text-sm font-bold md:text-lg">
+                              {farm.barangay.toUpperCase()}
+                            </p>
+                            <p className="text-xs opacity-80 md:text-sm">
+                              {farm.address}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>
@@ -141,7 +166,7 @@ function Page() {
             id="map"
             className="border-sidebar-accent relative flex h-[70vh] flex-col items-center overflow-hidden border-t border-b md:h-[90vh]"
           >
-            <MapView className="absolute opacity-80" />
+            <MapView className="absolute opacity-80" farms={published || []} />
             <div className="text-foreground absolute top-0 right-0 my-5 flex max-w-[1300px] flex-col items-end justify-center px-5">
               <div className="text-primary flex flex-row items-center gap-3">
                 <Map className="size-5 md:size-10" strokeWidth={3} />
@@ -156,7 +181,7 @@ function Page() {
           </div>
 
           <div
-            className="border-sidebar-accent relative flex h-[20vh] mt-5 flex-col items-center justify-center overflow-hidden  md:h-[30vh]"
+            className="border-sidebar-accent relative mt-5 flex h-[20vh] flex-col items-center justify-center overflow-hidden md:h-[30vh]"
             id="about"
           >
             <Image
@@ -164,7 +189,7 @@ function Page() {
               height={1000}
               alt="logo"
               src={"/bg.png"}
-              className="absolute z-10 h-full w-full object-cover brightness-[.7] sepia-50 opacity-80"
+              className="absolute z-10 h-full w-full object-cover opacity-80 brightness-[.7] sepia-50"
             />
             <div className="z-50 flex h-full w-full max-w-[1300px] flex-col justify-end px-5 py-5 md:py-10">
               <p className="text-4xl font-bold tracking-widest shadow-black drop-shadow md:text-7xl">

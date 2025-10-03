@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +11,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import {  Handshake, LayoutDashboard, NewspaperIcon, User, Wheat } from "lucide-react";
+import {  NewspaperIcon, User, Wheat } from "lucide-react";
+import { NavUserFarmer } from "./nav-user-farmer";
 
 export const menu = [
     {
@@ -64,7 +64,7 @@ export function FarmerSideBar({ ...props }: React.ComponentProps<typeof Sidebar>
         {/* <NavSecondary items={menu.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        <NavUserFarmer />
       </SidebarFooter>
     </Sidebar>
   );

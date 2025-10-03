@@ -63,6 +63,24 @@ export const farmerRouter = createTRPCRouter({
       if (!farmer) throw new Error("No farmer found");
       return farmer;
     }),
+  getFarmerByAccountId: protectedProcedure
+    .input(
+      z.object({
+        farmerId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const farmer = await ctx.db.farmer.findFirst({
+        where: { 
+          accountId : input.farmerId
+         },
+        include: {
+          FarmerAccount: true,
+        },
+      });
+      if (!farmer) throw new Error("No farmer found");
+      return farmer;
+    }),
   getFarmerFarms: protectedProcedure
     .input(
       z.object({

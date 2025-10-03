@@ -29,6 +29,8 @@ import { Image, LoaderCircle, Map, Pyramid, Wheat } from "lucide-react";
 import React from "react";
 
 function Farms() {
+  const shane = "Farm rendered"
+  console.log(shane);
   const { data, isLoading } = api.Farmer.farms.getFarms.useQuery();
   return (
     <div className="lg:bg-background bg-foreground/10">

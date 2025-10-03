@@ -19,6 +19,9 @@ export const publicRouter = createTRPCRouter({
         where: {
           isPublished: true,
         },
+        include : {
+          FarmImage: true,
+        }
       })
       .then((data) =>
         data.filter((d) => {
