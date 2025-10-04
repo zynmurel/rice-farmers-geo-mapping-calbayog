@@ -27,8 +27,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatName } from "@/lib/distributionUtils";
 import ViewDistribution from "./view-distrubution";
+import { format } from "date-fns";
 
-function DistributionTable() {
+function PlantingTable() {
   const [year] = useQueryState("distribution-year", parseAsString);
   const [season] = useQueryState("distribution-season", parseAsString);
   const [barangay] = useQueryState("distribution-barangay", parseAsString);
@@ -42,92 +43,85 @@ function DistributionTable() {
     },
   );
   const [_, setView] = useQueryState("view-distribution", parseAsString);
-  const { data: distributions, isLoading } =
-    api.distribution.getDistributions.useQuery({
+  const { data: planting, isLoading } =
+    api.distribution.getPlantingDistributions.useQuery({
       year,
       season: season as "WET" | "DRY" | null,
       barangay,
       ...pagination,
     });
-  const { data: count } = api.distribution.getDistributionsCount.useQuery({
-    year,
-    season: season as "WET" | "DRY" | null,
-    barangay,
-  });
+  const { data: count } =
+    api.distribution.getPlantingDistributionsCount.useQuery({
+      year,
+      season: season as "WET" | "DRY" | null,
+      barangay,
+    });
 
   return (
     <div className="rounded-lg border">
       <ViewDistribution />
-      <Table>
+      <Table className=" overflow-hidden rounded-t-md">
         <TableHeader className="">
           <TableRow>
-            <TableHead className="w-[130px] pl-4 text-center">
-              Year & Season
+            <TableHead className="pl-4">Farmer</TableHead>
+            <TableHead>Establisment</TableHead>
+            <TableHead>Planted Quantity</TableHead>
+            <TableHead>Date of Sowing</TableHead>
+            <TableHead>Land Area</TableHead>
+            <TableHead className="bg-sidebar-accent/30 text-center" align="center">
+              Harvest Quantity
             </TableHead>
-            <TableHead>Farmer</TableHead>
-            <TableHead>Barangay/Address</TableHead>
-            <TableHead>Area</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Crops Distributed</TableHead>
-            <TableHead></TableHead>
+            <TableHead className="bg-sidebar-accent/30 text-center" align="center">Harvest Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {distributions?.map((distribution) => {
+          {planting?.map((planting) => {
             return (
-              <TableRow key={distribution.id}>
-                <TableCell className="w-[130px] pl-4">
-                  <div className="flex flex-row items-start justify-center gap-1">
-                    <Badge>{distribution.year}</Badge>
-                    <Badge
-                      className={
-                        distribution.season === "DRY"
-                          ? "bg-chart-1"
-                          : "bg-chart-2"
-                      }
-                    >
-                      {distribution.season === "DRY"
-                        ? "Dry Season"
-                        : distribution.season === "WET"
-                          ? "Wet Season"
-                          : distribution.season}
-                    </Badge>
-                  </div>
-                </TableCell>
-                <TableCell>
+              <TableRow key={planting.id}>
+                <TableCell className="pl-4">
                   <div>
-                    <p className="text-base font-semibold">
-                      {formatName(distribution.Farm.Farmer)}
+                    <p className="text-sm font-semibold">
+                      {formatName(planting.Distribution.Farm.Farmer)}
                     </p>
-                    <p className="text-foreground/70">
-                      {distribution.Farm.Farmer.phoneNumber}
-                    </p>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <p className="text-base font-semibold">
-                      {distribution.Farm.barangay}
-                    </p>
-                    <p className="text-foreground/70">
-                      {distribution.Farm.address}
+                    <p className="text-xs">
+                      Barangay {planting.Distribution.Farm.barangay}
                     </p>
                   </div>
                 </TableCell>
-                <TableCell>{distribution.Farm.landArea} ha</TableCell>
                 <TableCell>
-                  {distribution.CropDistribution[0]?.quantity || 0} kg
+                  <div className="font-semibold">
+                    {planting.establishmentType}
+                  </div>
+                  <div className="text-xs font-normal">
+                    {planting.establishmentType === "Transplanted" &&
+                    planting.dateOfTransplant
+                      ? `Transplant Date : ${format(planting.dateOfTransplant, "PP")}`
+                      : ""}
+                  </div>
                 </TableCell>
-                <TableCell>
-                  {distribution.CropDistribution[0]?.Crop ? (
-                    <div className="font-bold">
-                      {distribution.CropDistribution[0]?.Crop.title}
-                    </div>
+                <TableCell>{planting.plantedQuantity} Kg</TableCell>
+                <TableCell>{format(planting.dateOfSowing, "PP")}</TableCell>
+                <TableCell>{planting.plantedArea} Hectare</TableCell>
+                <TableCell className="bg-sidebar-accent/30 font-semibold text-primary" align="center">
+                  {planting.harvestedQuantity ? (
+                    `${planting.harvestedQuantity} Kg`
                   ) : (
-                    <div className="text-slate-500">No record</div>
+                    <span className="text-foreground/60 text-xs font-normal">
+                      Not yet provided
+                    </span>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="bg-sidebar-accent/30 font-semibold text-primary" align="center">
+                  {planting.actualHarvestDate ? (
+                    format(planting.actualHarvestDate, "PP")
+                  ) : (
+                    <span className="text-foreground/60 text-xs font-normal">
+                      Not yet provided
+                    </span>
+                  )}
+                </TableCell>
+
+                {/* <TableCell>
                   <div className="flex flex-row items-center justify-center gap-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -135,7 +129,7 @@ function DistributionTable() {
                           variant={"outline"}
                           size={"icon"}
                           className="size-7 cursor-pointer text-xs"
-                          onClick={() => setView(distribution.id)}
+                          onClick={() => setView(planting.Distribution.id)}
                         >
                           <ArrowUpRight />
                         </Button>
@@ -145,7 +139,7 @@ function DistributionTable() {
                       </TooltipContent>
                     </Tooltip>
                   </div>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             );
           })}
@@ -169,4 +163,4 @@ function DistributionTable() {
   );
 }
 
-export default DistributionTable;
+export default PlantingTable;

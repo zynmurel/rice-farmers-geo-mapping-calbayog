@@ -44,6 +44,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PlantingTable from "./_components/planting-table";
 
 function Page() {
   const [activeTab, setActiveTab] = useQueryState(
@@ -234,7 +235,9 @@ function Page() {
             <TabsContent value="distribution">
               <DistributionTable />
             </TabsContent>
-            <TabsContent value="crop-planting"></TabsContent>
+            <TabsContent value="crop-planting">
+              <PlantingTable/>
+            </TabsContent>
           </Tabs>
         </Card>
       </div>

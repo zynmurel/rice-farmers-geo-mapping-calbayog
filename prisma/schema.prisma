@@ -217,11 +217,11 @@ model Distribution {
 model Planting {
     id                  String           @id @default(uuid())
     distributionId      String
-    distributedCropId   Int
+    distributedCropId   Int?
     establishmentType   String //Transplanted, Direct Wet Seeded, Direct Dry Seeded
     dateOfSowing        DateTime
     dateOfTransplant    DateTime?
-    expectedHarvestDate DateTime
+    expectedHarvestDate DateTime?
     actualHarvestDate   DateTime?
     plantedArea         Float? // hectares
     moistureContent     Float? // e.g., 22.5 (percent)
@@ -230,7 +230,7 @@ model Planting {
     harvestedQuantity   Float?
     harvestedUnit       UnitType?        @default(KG)
     Distribution        Distribution     @relation(fields: [distributionId], references: [id], onDelete: Cascade)
-    CropDistribution    CropDistribution @relation(fields: [distributedCropId], references: [id], onDelete: Cascade)
+    CropDistribution    CropDistribution? @relation(fields: [distributedCropId], references: [id], onDelete: Cascade)
 }
 
 model FarmImage {

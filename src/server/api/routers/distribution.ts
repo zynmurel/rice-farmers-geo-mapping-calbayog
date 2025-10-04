@@ -30,7 +30,104 @@ export const distributionRouter = createTRPCRouter({
               Fertilizer: true,
             },
           },
-          Farm: true,
+          Planting: true,
+          Farm: {
+            include: {
+              Farmer: true,
+            },
+          },
+        },
+      });
+    }),
+  upsertCropDistribution: protectedProcedure
+    .input(
+      z.object({
+        cropDistributionId: z.number().optional(),
+        distributionId: z.string(),
+        cropId: z.string().optional(),
+        quantity: z.number(),
+        dateGiven: z.date().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { cropDistributionId, ...rest } = input;
+      return await ctx.db.cropDistribution.upsert({
+        where: {
+          id: cropDistributionId || 0,
+        },
+        create: {
+          ...rest,
+          cropId: rest.cropId || null,
+          type: "SEED",
+          unit: "KG",
+        },
+        update: {
+          ...rest,
+          cropId: rest.cropId || null,
+          type: "SEED",
+          unit: "KG",
+        },
+      });
+    }),
+  upsertFertilizerDistribution: protectedProcedure
+    .input(
+      z.object({
+        fertilizerDistributionId: z.number().optional(),
+        distributionId: z.string(),
+        fertilizerId: z.string(),
+        quantity: z.number(),
+        dateGiven: z.date(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { fertilizerDistributionId, ...rest } = input;
+      return await ctx.db.fertilizerDistribution.upsert({
+        where: {
+          id: fertilizerDistributionId || 0,
+        },
+        create: {
+          ...rest,
+          unit: "KG",
+        },
+        update: {
+          ...rest,
+          unit: "KG",
+        },
+      });
+    }),
+  upsertPlanting: protectedProcedure
+    .input(
+      z.object({
+        plantingId: z.string().optional(),
+        distributionId: z.string(),
+        establishmentType: z.enum([
+          "Transplanted",
+          "Direct Wet Seeded",
+          "Direct Dry Seeded",
+        ]),
+        dateOfSowing: z.date({ required_error: "Date of sowing is required" }),
+        dateOfTransplant: z.date().optional(),
+        actualHarvestDate: z.date().optional(),
+        plantedArea: z.coerce.number().min(0.01, "Planted area is required"),
+        plantedQuantity: z.coerce
+          .number()
+          .min(0.01, "Planted quantity is required"),
+        harvestedQuantity: z.coerce.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { plantingId, ...rest } = input;
+      return await ctx.db.planting.upsert({
+        where: {
+          id: plantingId || "not-existing-id",
+        },
+        create: {
+          ...rest,
+          plantedUnit: "KG",
+          harvestedUnit: "KG",
+        },
+        update: {
+          ...rest,
         },
       });
     }),
@@ -123,6 +220,80 @@ export const distributionRouter = createTRPCRouter({
       });
     }),
 
+  getPlantingDistributions: protectedProcedure
+    .input(
+      z.object({
+        season: z.enum(["WET", "DRY"]).nullable(),
+        year: z.string().nullable(),
+        barangay: z.string().nullable(),
+        skip: z.number(),
+        take: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const season = input.season ? { season: input.season } : {};
+      const year = input.year ? { year: input.year } : {};
+      const barangay = input.barangay
+        ? {
+            Farm: {
+              barangay: input.barangay,
+            },
+          }
+        : {};
+      return ctx.db.planting.findMany({
+        where: {
+          Distribution: {
+            ...barangay,
+            ...season,
+            ...year,
+          },
+        },
+        include: {
+          Distribution: {
+            include: {
+              Farm: {
+                include: {
+                  Farmer: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { dateOfSowing: "desc" },
+        skip: input.skip,
+        take: input.take,
+      });
+    }),
+
+  getPlantingDistributionsCount: protectedProcedure
+    .input(
+      z.object({
+        season: z.enum(["WET", "DRY"]).nullable(),
+        year: z.string().nullable(),
+        barangay: z.string().nullable(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const season = input.season ? { season: input.season } : {};
+      const year = input.year ? { year: input.year } : {};
+      const barangay = input.barangay
+        ? {
+            Farm: {
+              barangay: input.barangay,
+            },
+          }
+        : {};
+      return ctx.db.planting.count({
+        where: {
+          Distribution: {
+            ...barangay,
+            ...season,
+            ...year,
+          },
+        },
+      });
+    }),
+
   createDistribution: protectedProcedure
     .input(
       z.object({
@@ -175,9 +346,7 @@ export const distributionRouter = createTRPCRouter({
             } catch (err: any) {
               // check if it's a Prisma unique constraint error
               if (err.code === "P2002") {
-                throw new Error(
-                  `Unique Constraint ${dis.farmId}`,
-                );
+                throw new Error(`Unique Constraint ${dis.farmId}`);
               }
               throw err; // rethrow if it's another kind of error
             }

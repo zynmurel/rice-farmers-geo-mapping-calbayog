@@ -138,16 +138,16 @@ function Page() {
                               height={200}
                               alt="farm-image"
                               src={farm.FarmImage?.[0]?.url}
-                              className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 object-cover brightness-[.7] sepia-20"
+                              className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 object-cover brightness-[.9] sepia-20"
                             />
                           ) : (
                             <div className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 bg-white/10" />
                           )}
-                          <div className="bg-background/70 z-10 flex w-full flex-col p-2">
+                          <div className="bg-background/90 z-10 flex w-full flex-col p-2 rounded">
                             <p className="text-sm font-bold md:text-lg">
                               {farm.barangay.toUpperCase()}
                             </p>
-                            <p className="text-xs opacity-80 md:text-sm">
+                            <p className="text-xs opacity-80 md:text-sm -mt-1">
                               {farm.address}
                             </p>
                           </div>
@@ -175,7 +175,7 @@ function Page() {
                 </p>
               </div>
               <p className="text-primary text-xs font-medium opacity-80 md:text-xl">
-                Farmers Registered : 100
+                Published Farms : {published?.length || 0}
               </p>
             </div>
           </div>
