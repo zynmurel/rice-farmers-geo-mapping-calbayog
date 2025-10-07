@@ -166,3 +166,10 @@ export const optionTenurialStatus = Object.entries(tenurial_status).map(
     };
   },
 );
+
+const currentYear = new Date().getFullYear();
+
+export const years = Array.from(
+  { length: currentYear - 2010 + 1 },
+  (_, i) => `${2010 + i}`,
+);

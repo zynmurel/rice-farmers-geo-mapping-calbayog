@@ -1,3 +1,4 @@
+import { CalculatorToggle } from "@/app/_components/cal-toggle";
 import { ModeToggle } from "@/app/_components/mode-toggle";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -20,7 +21,8 @@ export default function MainLayout({
       <div className="flex h-screen max-h-screen w-full flex-col md:p-2">
         <div className="h-full w-full overflow-hidden md:rounded-xl">
           <div className="bg-background/95 relative flex h-full flex-col">
-            <div className=" absolute top-3 right-4 z-50">
+            <div className="absolute top-3 right-4 z-50 flex flex-row gap-1">
+              <CalculatorToggle />
               <ModeToggle />
             </div>
             {/* <SiteHeader /> */}
