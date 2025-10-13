@@ -111,7 +111,20 @@ export function CreateDistributionModal() {
           why: undefined,
         });
         setOpenCreate(false);
-        // setOpenDistribution(data.id);
+        const { phoneNumbers, distributionBatch } = data;
+
+        const message = `Good day! 🌾
+This is a message from GEO AGRI.
+
+WHO: ${distributionBatch.who}
+WHAT: ${distributionBatch.what}
+WHEN: ${distributionBatch.when}
+WHERE: ${distributionBatch.where}
+WHY: ${distributionBatch.why}
+
+Thank you for your continued cooperation with GEO AGRI.`;
+        console.log(distributionBatch);
+        await sendSms({ message, recipients: phoneNumbers });
         await Promise.all([
           utils.distribution.getDistributions.invalidate(),
           utils.distribution.getDistributionsCount.invalidate(),
@@ -122,7 +135,9 @@ export function CreateDistributionModal() {
         if (!e?.message.includes("Unique Constraint")) {
           message = "Error submitting distribution";
         } else {
-          const farmer = data?.find((f) => f.id === e.message.replace('Unique Constraint ', ''));
+          const farmer = data?.find(
+            (f) => f.id === e.message.replace("Unique Constraint ", ""),
+          );
           if (farmer) {
             message = `Distribution for ${formatName(farmer.Farmer)} in ${form.getValues("year")} ${form.getValues("season") === "DRY" ? "Dry season" : "Wet season"} was already made`;
           } else {
@@ -145,6 +160,25 @@ export function CreateDistributionModal() {
     setOpenCreate(false);
   };
 
+  const sendSms = async ({
+    message,
+    recipients,
+  }: {
+    message: string;
+    recipients: string[];
+  }) => {
+    const res = await fetch("/api/send-sms-textbee", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        recipients,
+        message,
+      }),
+    });
+    const data = await res.json();
+    console.log(data);
+  };
+
   useEffect(() => {
     if (data && barangay) {
       form.setValue("Distributions", []);
@@ -164,7 +198,7 @@ export function CreateDistributionModal() {
 
   return (
     <Dialog open={openCreate} onOpenChange={() => setOpenCreate(false)}>
-      <DialogContent className="min-w-4xl bg-card">
+      <DialogContent className="bg-card min-w-4xl">
         <DialogHeader className="gap-y-1">
           <DialogTitle>New Distribution</DialogTitle>
           <DialogDescription>

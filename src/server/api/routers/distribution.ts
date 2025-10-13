@@ -1,6 +1,7 @@
 import { formatName } from "@/lib/distributionUtils";
+import { formatPhoneNumber } from "@/lib/formatPhone";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { Distribution } from "@prisma/client";
+import type { Distribution, Farm, Farmer } from "@prisma/client";
 import z from "zod";
 
 export const distributionRouter = createTRPCRouter({
@@ -324,7 +325,9 @@ export const distributionRouter = createTRPCRouter({
           data: rest,
         });
 
-        const results = [] as Distribution[];
+        const results = [] as (Distribution & {
+          Farm: Farm & { Farmer: Farmer };
+        })[];
 
         await ctx.db.$transaction(async (tx) => {
           for (const dis of Distributions.filter((d) => d.checked)) {
@@ -341,6 +344,13 @@ export const distributionRouter = createTRPCRouter({
                     },
                   },
                 },
+                include: {
+                  Farm: {
+                    include: {
+                      Farmer: true,
+                    },
+                  },
+                },
               });
               results.push(created);
             } catch (err: any) {
@@ -353,7 +363,11 @@ export const distributionRouter = createTRPCRouter({
           }
         });
 
-        return results;
+        return {
+          results,
+          phoneNumbers: results.map((res) => formatPhoneNumber(res.Farm.Farmer.phoneNumber)!),
+          distributionBatch,
+        };
       } catch (e) {
         console.error(e);
         throw e;

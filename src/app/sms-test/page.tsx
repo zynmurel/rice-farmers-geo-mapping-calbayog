@@ -33,6 +33,19 @@ export default function SmsSender() {
     console.log(data);
   };
 
+  const sendSms3 = async () => {
+    const res = await fetch("/api/send-sms-textbee", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        recipients: [to],
+        message: message,
+      }),
+    });
+    const data = await res.json();
+    console.log(data);
+  };
+
   return (
     <div className="space-y-2 p-4">
       <input
@@ -52,6 +65,9 @@ export default function SmsSender() {
       </button>
       <button className="rounded bg-blue-500 p-2 text-white" onClick={sendSms2}>
         Send SMS2
+      </button>
+      <button className="rounded bg-blue-500 p-2 text-white" onClick={sendSms3}>
+        Send SMS3
       </button>
     </div>
   );

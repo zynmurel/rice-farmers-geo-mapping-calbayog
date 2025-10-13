@@ -84,13 +84,21 @@ function FarmerRegisterModal({
     phoneNumber: string;
     otp: number;
   }) => {
-    const res = await fetch("/api/send-sms-phil", {
+    // const res = await fetch("/api/send-sms-textbee", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     recipient: phoneNumber, // recipient number
+    //     message: `Your OTP code is: ${otp}\nThis code will expire in 5 minutes.\n\n- GeoAgri`, // message content
+    //     senderId: "PhilSMS", // if you have a valid sender id
+    //   }),
+    // });
+    const res = await fetch("/api/send-sms-textbee", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        recipient: phoneNumber, // recipient number
+        recipients: [phoneNumber],
         message: `Your OTP code is: ${otp}\nThis code will expire in 5 minutes.\n\n- GeoAgri`, // message content
-        senderId: "PhilSMS", // if you have a valid sender id
       }),
     });
 
