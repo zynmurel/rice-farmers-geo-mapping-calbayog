@@ -22,7 +22,7 @@ export default function MainLayout({
         <div className="h-full w-full overflow-hidden md:rounded-xl">
           <div className="bg-background/95 relative flex h-full flex-col">
             <div className="absolute top-3 right-4 z-50 flex flex-row gap-1">
-              <CalculatorToggle />
+              {/* <CalculatorToggle /> */}
               <ModeToggle />
             </div>
             {/* <SiteHeader /> */}
