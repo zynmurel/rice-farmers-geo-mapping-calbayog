@@ -274,7 +274,9 @@ export default function RiceComputationChart() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {result.populationNow.toFixed(0)}
+                  {result.populationNow.toLocaleString(undefined, {
+                    maximumFractionDigits: 0,
+                  })}
                 </div>
                 <p className="text-muted-foreground text-sm">people</p>
               </CardContent>
@@ -286,7 +288,10 @@ export default function RiceComputationChart() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold">
-                  {result.totalConsumptionTons.toFixed(2)}
+
+                  {result.totalConsumptionTons.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
                 <p className="text-muted-foreground text-sm">metric tons</p>
               </CardContent>
@@ -505,11 +510,21 @@ export default function RiceComputationChart() {
                 <div className="space-y-2">
                   <div className="flex justify-between border-b pb-2">
                     <span className="font-medium">Total Population:</span>
-                    <span>{result.populationNow.toFixed(0)} people</span>
+                    <span>
+                      {result.populationNow.toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}{" "}
+                      people
+                    </span>
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="font-medium">Rice Eaters (80%):</span>
-                    <span>{result.riceEaters.toFixed(0)} people</span>
+                    <span>
+                      {result.riceEaters.toLocaleString(undefined, {
+                        maximumFractionDigits: 0,
+                      })}{" "}
+                      people
+                    </span>
                   </div>
                   <div className="flex justify-between border-b pb-2">
                     <span className="font-medium">Per Capita Consumption:</span>
