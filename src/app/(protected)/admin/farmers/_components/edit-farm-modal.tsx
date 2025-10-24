@@ -100,6 +100,9 @@ function EditFarmModal() {
 
   const form = useForm<z.infer<typeof updateFarmSchema>>({
     resolver: zodResolver(updateFarmSchema),
+    defaultValues : {
+      source_of_irrigation : []
+    }
   });
 
   const { control } = form;

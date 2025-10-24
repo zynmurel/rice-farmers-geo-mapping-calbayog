@@ -63,6 +63,7 @@ const defaultValues = {
       farmerCount: 0,
       landArea: 0,
       coordinates: undefined,
+      source_of_irrigation: [],
     },
   ],
 };
@@ -95,7 +96,7 @@ function CreateFarmer() {
       });
     },
   });
-  console.log(form.formState.errors)
+  console.log(form.formState.errors);
 
   async function onSubmit(values: z.infer<typeof farmerSchema>) {
     setIsUploading(true);
