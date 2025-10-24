@@ -133,6 +133,8 @@ const createFarmerMutationSchema = z.object({
   lastName: z.string().min(1),
   birthday: z.date(),
   addressLineOne: z.string(),
+  middleName: z.string().optional(),
+  rsbsaNo: z.string().min(1, "RSBSA number  is required"),
   gender: z.enum(["MALE", "FEMALE"]),
   civilStatus: z.enum([
     "SINGLE",
