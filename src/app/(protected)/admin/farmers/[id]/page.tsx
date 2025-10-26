@@ -38,6 +38,7 @@ import CoordinateShape from "@/lib/coordinates-shape";
 import { parseAsString, useQueryState } from "nuqs";
 import EditFarmModal from "../_components/edit-farm-modal";
 import AddImageFarmModal from "../_components/add-image-modal";
+import CropHistoryModal from "../_components/crop-history-modal";
 
 function Farms() {
   const { id } = useParams();
@@ -48,6 +49,10 @@ function Farms() {
   const [_, setId] = useQueryState("edit-farm", parseAsString.withDefault(""));
   const [, setAddImageId] = useQueryState(
     "add-image-farm",
+    parseAsString.withDefault(""),
+  );
+  const [, setShowCropHistory] = useQueryState(
+    "crop-history",
     parseAsString.withDefault(""),
   );
 
@@ -77,7 +82,8 @@ function Farms() {
       </CardHeader>
       <CardContent className="grid gap-4">
         <EditFarmModal />
-        <AddImageFarmModal/>
+        <AddImageFarmModal />
+        <CropHistoryModal/>
         {farms?.map((farm, index) => {
           const coordinates = farm.coordinates as {
             lng: number;
@@ -121,7 +127,11 @@ function Farms() {
                       <Edit />
                       Edit Farm
                     </Button>
-                    <Button className="flex-1" size={"lg"}>
+                    <Button
+                      className="flex-1"
+                      size={"lg"}
+                      onClick={() => setShowCropHistory(farm.id)}
+                    >
                       <History />
                       Crop History
                     </Button>

@@ -194,6 +194,35 @@ export const distributionRouter = createTRPCRouter({
         take: input.take,
       });
     }),
+  getDistributionsByFarmId: protectedProcedure
+    .input(
+      z.object({
+        farmId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.distribution.findMany({
+        where: {
+          farmId: input.farmId,
+        },
+        include: {
+          Farm: {
+            include: {
+              Farmer: true,
+            },
+          },
+          CropDistribution: {
+            include: { Crop: true, Planting: true },
+          },
+          FertilizerDistribution: {
+            include: {
+              Fertilizer: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+    }),
   getDistributionsCount: protectedProcedure
     .input(
       z.object({
@@ -365,7 +394,9 @@ export const distributionRouter = createTRPCRouter({
 
         return {
           results,
-          phoneNumbers: results.map((res) => formatPhoneNumber(res.Farm.Farmer.phoneNumber)!),
+          phoneNumbers: results.map(
+            (res) => formatPhoneNumber(res.Farm.Farmer.phoneNumber)!,
+          ),
           distributionBatch,
         };
       } catch (e) {
