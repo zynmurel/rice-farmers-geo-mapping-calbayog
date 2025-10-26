@@ -59,9 +59,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import EditFarmModal from "../farmers/_components/edit-farm-modal";
 import EditFarmIsFeatured from "../farmers/_components/edit-farm-featured";
+import { useRouter } from "next/navigation";
 
 function Farmers() {
   const [open, setOpen] = React.useState(false);
+  const router = useRouter()
 
   const [_f, setOpenEditFeatured] = useQueryStates({
     id: parseAsString.withDefault(""),
@@ -413,7 +415,8 @@ function Farmers() {
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuSeparator />
                               <DropdownMenuGroup>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                onClick={()=>router.push(`/admin/farmers/${farm.Farmer.id}`)}>
                                   <Eye />
                                   View
                                 </DropdownMenuItem>
