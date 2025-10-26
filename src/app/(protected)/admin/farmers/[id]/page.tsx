@@ -37,7 +37,7 @@ import Image from "next/image";
 import CoordinateShape from "@/lib/coordinates-shape";
 import { parseAsString, useQueryState } from "nuqs";
 import EditFarmModal from "../_components/edit-farm-modal";
-import { optionWeatherRisks } from "@/lib/utils";
+import AddImageFarmModal from "../_components/add-image-modal";
 
 function Farms() {
   const { id } = useParams();
@@ -46,6 +46,10 @@ function Farms() {
   const searchParams = useSearchParams();
 
   const [_, setId] = useQueryState("edit-farm", parseAsString.withDefault(""));
+  const [, setAddImageId] = useQueryState(
+    "add-image-farm",
+    parseAsString.withDefault(""),
+  );
 
   const { data: farms, isLoading: farmsIsLoading } =
     api.farmer.getFarmerFarms.useQuery({ farmerId: String(id) });
@@ -62,13 +66,18 @@ function Farms() {
             </CardDescription>
           </div>
         </div>
-        <Button variant={"outline"} className="text-primary">
+        <Button
+          variant={"outline"}
+          className="text-primary"
+          onClick={() => setId("create")}
+        >
           <Plus />
           Farm
         </Button>
       </CardHeader>
       <CardContent className="grid gap-4">
         <EditFarmModal />
+        <AddImageFarmModal/>
         {farms?.map((farm, index) => {
           const coordinates = farm.coordinates as {
             lng: number;
@@ -98,7 +107,7 @@ function Farms() {
                       className="flex-1"
                       size={"lg"}
                       variant={"outline"}
-                      onClick={() => setId(farm.id)}
+                      onClick={() => setAddImageId(farm.id)}
                     >
                       <ImageIcon />
                       Add Image

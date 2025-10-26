@@ -68,16 +68,22 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { useParams } from "next/navigation";
 
 function EditFarmModal() {
   const utils = api.useUtils();
   const [id, setId] = useQueryState("edit-farm", parseAsString.withDefault(""));
 
+  const { id: farmerId } = useParams();
+
+  const { data: farmer, isLoading: farmerIsLoading } =
+    api.farmer.getFarmer.useQuery({ farmerId: String(farmerId) });
+
   const { data: farm, isLoading } = api.farmer.getFarmerFarm.useQuery(
     {
       farmId: id,
     },
-    { enabled: !!id },
+    { enabled: !!(id !== "create") },
   );
 
   const { mutate, isPending } = api.farmer.updateFarm.useMutation({
@@ -98,11 +104,33 @@ function EditFarmModal() {
     },
   });
 
+  const { mutate: create, isPending: createIsPending } =
+    api.farmer.createFarm.useMutation({
+      onSuccess: async () => {
+        toast.success(`Farm ${id === "create" ? "created" : "updated"}`);
+        onClose();
+        await Promise.all([
+          utils.farmer.getFarmerFarms.invalidate(),
+          utils.farmer.getFarmerFarm.invalidate(),
+          utils.farm.getFarm.invalidate(),
+          utils.farm.getFarmCount.invalidate(),
+        ]);
+      },
+      onError: () => {
+        toast.error("Failed", {
+          description: "Failed to update farm. Please try again.",
+        });
+      },
+    });
+
   const form = useForm<z.infer<typeof updateFarmSchema>>({
     resolver: zodResolver(updateFarmSchema),
-    defaultValues : {
-      source_of_irrigation : []
-    }
+    defaultValues: {
+      source_of_irrigation: [],
+      farmingMethodIds: [],
+      weatherRiskIds: [],
+      isPublished: true,
+    },
   });
 
   const { control } = form;
@@ -112,10 +140,18 @@ function EditFarmModal() {
   };
 
   async function onSubmit(values: z.infer<typeof updateFarmSchema>) {
-    mutate({
-      ...values,
-      id,
-    });
+    if (id === "create") {
+      create({
+        ...values,
+        id: id === "create" ? undefined : id,
+        farmerId: farmerId as string,
+      });
+    } else {
+      mutate({
+        ...values,
+        id,
+      });
+    }
   }
   useEffect(() => {
     if (farm) {
@@ -136,6 +172,13 @@ function EditFarmModal() {
         soil_type: farm.soil_type as any[],
         topography: farm.topography as any[],
         tenurial_status: farm.tenurial_status as any[],
+      });
+    } else {
+      form.reset({
+        source_of_irrigation: [],
+        farmingMethodIds: [],
+        weatherRiskIds: [],
+        isPublished: true,
       });
     }
   }, [farm]);
@@ -162,7 +205,7 @@ function EditFarmModal() {
                 <LoaderCircle className="size-7 animate-spin" />
                 <p>Loading...</p>
               </div>
-            ) : !farm ? (
+            ) : !farm && id !== "create" ? (
               <div className="flex w-full flex-row items-center justify-center gap-2 p-10">
                 <p>
                   <UserX className="size-7" />
@@ -176,18 +219,18 @@ function EditFarmModal() {
                     <div className="-mt-1 flex flex-row items-center gap-3">
                       <Avatar className="text-foreground size-12 rounded-lg border">
                         <AvatarImage
-                          src={farm.Farmer.profile || undefined}
-                          alt={farm.Farmer.id}
+                          src={farmer?.profile || undefined}
+                          alt={farmer?.id}
                         />
                         <AvatarFallback className="bg-card rounded-lg">
-                          {farm.Farmer.firstName[0]}
-                          {farm.Farmer.lastName[0]}
+                          {farmer?.firstName[0]}
+                          {farmer?.lastName[0]}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="text-foreground/50 text-xs">Owner</p>
                         <p className="text-xl font-semibold">
-                          {farm?.Farmer.firstName} {farm?.Farmer.lastName}
+                          {farmer?.firstName} {farmer?.lastName}
                         </p>
                       </div>
                     </div>
@@ -600,7 +643,7 @@ function EditFarmModal() {
                 />
               </div>
             )}
-            <Button disabled={isPending}>Submit</Button>
+            <Button disabled={isPending || createIsPending}>Submit</Button>
           </form>
         </Form>
       </DialogContent>

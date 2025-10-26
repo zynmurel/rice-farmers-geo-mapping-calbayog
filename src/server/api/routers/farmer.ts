@@ -1,4 +1,5 @@
 import {
+  addFarmImageSchema,
   createFarmerMutationSchema,
   updateFarmerSchema,
   updateFarmSchema,
@@ -71,9 +72,9 @@ export const farmerRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const farmer = await ctx.db.farmer.findFirst({
-        where: { 
-          accountId : input.farmerId
-         },
+        where: {
+          accountId: input.farmerId,
+        },
         include: {
           FarmerAccount: true,
         },
@@ -122,11 +123,7 @@ export const farmerRouter = createTRPCRouter({
         });
         const farmsData = await Promise.all(
           farms.map(async (farm) => {
-            const {
-              images,
-              coordinates,
-              ...rest
-            } = farm;
+            const { images, coordinates, ...rest } = farm;
             const coordinatesToJson = formatCoordinatesToJSON(coordinates);
             return await tx.farm.create({
               data: {
@@ -164,16 +161,57 @@ export const farmerRouter = createTRPCRouter({
   updateFarm: protectedProcedure
     .input(updateFarmSchema)
     .mutation(async ({ ctx, input }) => {
-      const { id, farmingMethodIds, weatherRiskIds, coordinates, ...rest } =
-        input;
+      const {
+        farmerId,
+        id,
+        farmingMethodIds,
+        weatherRiskIds,
+        coordinates,
+        ...rest
+      } = input;
       const coordinatesToJson = formatCoordinatesToJSON(coordinates);
-      const IsFeatured = !rest.isPublished ? { isFeatured : false } : {}
+      const IsFeatured = !rest.isPublished ? { isFeatured: false } : {};
       return ctx.db.farm.update({
         where: { id },
         data: {
           ...rest,
           ...IsFeatured,
           coordinates: coordinatesToJson || [],
+        },
+      });
+    }),
+  addFarmImage: protectedProcedure
+    .input(addFarmImageSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { farmId, images } = input;
+      return ctx.db.farmImage.createMany({
+        data: images.map((img) => ({
+          url: img,
+          farmId,
+        })),
+      });
+    }),
+  createFarm: protectedProcedure
+    .input(updateFarmSchema)
+    .mutation(async ({ ctx, input }) => {
+      const {
+        id,
+        farmerId,
+        farmingMethodIds,
+        weatherRiskIds,
+        coordinates,
+        ...rest
+      } = input;
+      if (!farmerId) return;
+
+      const coordinatesToJson = formatCoordinatesToJSON(coordinates);
+      const IsFeatured = !rest.isPublished ? { isFeatured: false } : {};
+      return ctx.db.farm.create({
+        data: {
+          ...rest,
+          ...IsFeatured,
+          coordinates: coordinatesToJson || [],
+          farmerId,
         },
       });
     }),

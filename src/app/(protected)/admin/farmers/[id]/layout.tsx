@@ -53,11 +53,11 @@ function Farmer({ children }: { children: JSX.Element }) {
       icon: Map,
       url: `/admin/farmers/${id}/map`,
     },
-    {
-      label: "Crop History",
-      icon: History,
-      url: `/admin/farmers/${id}/crop-history`,
-    },
+    // {
+    //   label: "Crop History",
+    //   icon: History,
+    //   url: `/admin/farmers/${id}/crop-history`,
+    // },
   ];
   return (
     <PageLayout

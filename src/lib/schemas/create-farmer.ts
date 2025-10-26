@@ -79,7 +79,8 @@ const updateFarmerSchema = z.object({
 });
 
 const updateFarmSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
+  farmerId: z.string().optional(),
   isPublished: z.boolean(),
   weatherRiskIds: z.array(z.coerce.number()),
   barangay: z.string().min(1),
@@ -103,6 +104,11 @@ const updateFarmSchema = z.object({
   // coordinates: z
   //   .array(z.object({ lat: z.coerce.number(), lng: z.coerce.number() }))
   //   .refine((coords) => coords.length === 0 || coords.length >= 3),
+});
+
+const addFarmImageSchema = z.object({
+  farmId: z.string(),
+  images: z.array(z.string()),
 });
 
 const farmerSchema = z.object({
@@ -179,4 +185,5 @@ export {
   createFarmerMutationSchema,
   updateFarmerSchema,
   updateFarmSchema,
+  addFarmImageSchema
 };

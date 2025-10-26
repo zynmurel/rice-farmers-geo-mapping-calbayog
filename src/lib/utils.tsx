@@ -17,7 +17,7 @@ export const formatCoordinatesToString = (
 ) => {
   if (!coordinates) return undefined;
   return coordinates
-    .map((c) => [c.lat, c.lng])
+    .map((c) => [c.lng, c.lat])
     .flat()
     .join();
 };
