@@ -11,36 +11,39 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import {  NewspaperIcon, User, Wheat } from "lucide-react";
+import { NewspaperIcon, User, Wheat } from "lucide-react";
 import { NavUserFarmer } from "./nav-user-farmer";
+import { useLocaleStore } from "@/store/localeStore";
 
-export const menu = [
+export function FarmerSideBar({
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
+  const { messages } = useLocaleStore();
+  const menu = [
     {
-      title: "News",
-      key : "news",
+      title: messages.menu.news,
+      key: "news",
       url: "/farmer",
       icon: NewspaperIcon,
     },
     {
-      title: "Farms",
-      key : "farms",
+      title: messages.menu.farms,
+      key: "farms",
       url: "/farmer/farms",
       icon: Wheat,
     },
     {
-      title: "Account",
-      key : "account",
+      title: messages.menu.account,
+      key: "account",
       url: "/farmer/account",
       icon: User,
     },
-  ]
-
-export function FarmerSideBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  ];
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <div className="flex w-full flex-row items-end justify-start p-2 gap-2">
+          <div className="flex w-full flex-row items-end justify-start gap-2 p-2">
             <Image width={50} height={50} alt="logo" src={"/logo.png"} />
             <span className="text-xl font-bold tracking-[2px] uppercase">
               GEO-AGRI

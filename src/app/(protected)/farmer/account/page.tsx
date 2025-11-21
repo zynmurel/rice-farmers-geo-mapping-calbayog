@@ -18,11 +18,14 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import EditFarmerModal from "./_components/edit-farmer-modal";
+import { useLocaleStore } from "@/store/localeStore";
 // import EditFarmerModal from "./EditFarmerModal";
 
 export default function FarmerDetails() {
   const { data } = useSession();
   const [, setId] = useQueryState("edit-farmer", parseAsString.withDefault(""));
+  const {messages} = useLocaleStore()
+  const language = messages.account
 
   const { data: farmer, isLoading } = api.farmer.getFarmerByAccountId.useQuery(
     { farmerId: data?.user.id || "" },
@@ -33,7 +36,7 @@ export default function FarmerDetails() {
     return (
       <div className="flex items-center justify-center p-6">
         <LoaderCircle className="size-6 animate-spin" />
-        <span className="ml-2">Loading farmer...</span>
+        <span className="ml-2">{language.loadingFarmer}</span>
       </div>
     );
   }
@@ -42,7 +45,7 @@ export default function FarmerDetails() {
     return (
       <div className="text-muted-foreground flex items-center justify-center p-6">
         <UserX className="size-6" />
-        <span className="ml-2">No farmer found</span>
+        <span className="ml-2">{language.noFarmerFound}</span>
       </div>
     );
   }
@@ -64,29 +67,29 @@ export default function FarmerDetails() {
                 {farmer.firstName} {farmer.middleName || ""} {farmer.lastName}
               </CardTitle>
               <p className="text-muted-foreground text-xs">
-                Farmer Information
+                {language.farmerInfo}
               </p>
             </div>
           </div>
           <Button size="sm" variant="outline" onClick={() => setId(farmer.id)}>
-            Edit
+            {language.edit}
           </Button>
         </CardHeader>
         <CardContent className="divide-muted divide-y px-6">
           <div className="py-3">
             <InfoRow
               icon={Badge}
-              label="RSBSA No"
+              label={language.rsbsaNo}
               value={farmer.rsbsaNo || "-"}
             />
           </div>
           <div className="py-3">
-            <InfoRow icon={Phone} label="Phone" value={farmer.phoneNumber} />
+            <InfoRow icon={Phone} label={language.phone} value={farmer.phoneNumber} />
           </div>
           <div className="py-3">
             <InfoRow
               icon={Calendar}
-              label="Birthday"
+              label={language.birthday}
               value={
                 farmer.birthday
                   ? new Date(farmer.birthday).toLocaleDateString()
@@ -97,35 +100,35 @@ export default function FarmerDetails() {
           <div className="py-3">
             <InfoRow
               icon={MapPin}
-              label="Address"
+              label={language.address}
               value={farmer.addressLineOne}
             />
           </div>
           <div className="py-3">
-            <InfoRow icon={Venus} label="Gender" value={farmer.gender} />
+            <InfoRow icon={Venus} label={language.gender} value={farmer.gender} />
           </div>
           <div className="py-3">
             <InfoRow
               icon={Heart}
-              label="Civil Status"
+              label={language.civilStatus}
               value={farmer.civilStatus}
             />
           </div>
           {farmer.spouse && (
             <div className="py-3">
-              <InfoRow icon={Users} label="Spouse" value={farmer.spouse} />
+              <InfoRow icon={Users} label={language.spouse} value={farmer.spouse} />
             </div>
           )}
           <div className="py-3">
             <InfoRow
               icon={Users}
-              label="Indigenous"
+              label={language.indigenous}
               value={farmer.indigenous ? "Yes" : "No"}
             />
           </div>
           {farmer.tribe && (
             <div className="py-3">
-              <InfoRow icon={Users} label="Tribe" value={farmer.tribe} />
+              <InfoRow icon={Users} label={language.tribe} value={farmer.tribe} />
             </div>
           )}
         </CardContent>
@@ -144,23 +147,23 @@ export default function FarmerDetails() {
               <h2 className="text-sm font-semibold">
                 {farmer.firstName} {farmer.middleName || ""} {farmer.lastName}
               </h2>
-              <p className="text-muted-foreground text-xs">Farmer Info</p>
+              <p className="text-muted-foreground text-xs">{language.farmerInfo}</p>
             </div>
           </div>
           <Button size="sm" variant="outline" onClick={() => setId(farmer.id)}>
-            Edit
+            {language.edit}
           </Button>
         </div>
         <div className="divide-muted bg-card divide-y rounded-lg border p-2 px-4">
           <InfoRow
             icon={Badge}
-            label="RSBSA No"
+            label={language.rsbsaNo}
             value={farmer.rsbsaNo || "-"}
           />
-          <InfoRow icon={Phone} label="Phone" value={farmer.phoneNumber} />
+          <InfoRow icon={Phone} label={language.phone} value={farmer.phoneNumber} />
           <InfoRow
             icon={Calendar}
-            label="Birthday"
+            label={language.birthday}
             value={
               farmer.birthday
                 ? new Date(farmer.birthday).toLocaleDateString()
@@ -169,25 +172,25 @@ export default function FarmerDetails() {
           />
           <InfoRow
             icon={MapPin}
-            label="Address"
+            label={language.address}
             value={farmer.addressLineOne}
           />
-          <InfoRow icon={Venus} label="Gender" value={farmer.gender} />
+          <InfoRow icon={Venus} label={language.gender} value={farmer.gender} />
           <InfoRow
             icon={Heart}
-            label="Civil Status"
+            label={language.civilStatus}
             value={farmer.civilStatus}
           />
           {farmer.spouse && (
-            <InfoRow icon={Users} label="Spouse" value={farmer.spouse} />
+            <InfoRow icon={Users} label={language.spouse} value={farmer.spouse} />
           )}
           <InfoRow
             icon={Users}
-            label="Indigenous"
+            label={language.indigenous}
             value={farmer.indigenous ? "Yes" : "No"}
           />
           {farmer.tribe && (
-            <InfoRow icon={Users} label="Tribe" value={farmer.tribe} />
+            <InfoRow icon={Users} label={language.tribe} value={farmer.tribe} />
           )}
         </div>
       </div>

@@ -43,9 +43,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useLocaleStore } from "@/store/localeStore";
 
 function EditFarmerModal() {
   const utils = api.useUtils();
+  const { messages } = useLocaleStore();
+  const language = messages.account;
   const [id, setId] = useQueryState(
     "edit-farmer",
     parseAsString.withDefault(""),
@@ -62,9 +65,7 @@ function EditFarmerModal() {
     onSuccess: async () => {
       toast.success("Account updated");
       onClose();
-      await Promise.all([
-        utils.farmer.getFarmerByAccountId.invalidate(),
-      ]);
+      await Promise.all([utils.farmer.getFarmerByAccountId.invalidate()]);
     },
     onError: (error) => {
       const constraintPhone = error?.message.includes(
@@ -127,9 +128,9 @@ function EditFarmerModal() {
     <Dialog open={!!id} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md px-4 sm:max-w-xl sm:px-6 md:max-w-2xl lg:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Account Details</DialogTitle>
+          <DialogTitle>{language.accountDetails}</DialogTitle>
           <DialogDescription className="-mt-2">
-            Edit account details.
+            {language.editAccountDetails}
           </DialogDescription>
         </DialogHeader>
 
@@ -141,13 +142,13 @@ function EditFarmerModal() {
             {isLoading ? (
               <div className="flex w-full flex-row items-center justify-center gap-2 p-10">
                 <LoaderCircle className="size-7 animate-spin" />
-                <p>Loading...</p>
+                <p>{language.loadingFarmer}</p>
               </div>
             ) : !farmer ? (
               <div className="flex w-full flex-row items-center justify-center gap-2 p-10">
                 <p>
                   <UserX className="size-7" />
-                  No farmer found
+                  {language.noFarmerFound}
                 </p>
               </div>
             ) : (
@@ -159,7 +160,7 @@ function EditFarmerModal() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>First Name</FormLabel>
+                          <FormLabel>{language.firstName}</FormLabel>
                           <FormControl>
                             <Input placeholder="Juan" {...field} />
                           </FormControl>
@@ -173,7 +174,7 @@ function EditFarmerModal() {
                       name="middleName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Middle Name</FormLabel>
+                          <FormLabel>{language.middleName}</FormLabel>
                           <FormControl>
                             <Input placeholder="Juan" {...field} />
                           </FormControl>
@@ -186,7 +187,7 @@ function EditFarmerModal() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Last Name</FormLabel>
+                          <FormLabel>{language.lastName}</FormLabel>
                           <FormControl>
                             <Input placeholder="Dela Cruz" {...field} />
                           </FormControl>
@@ -200,7 +201,7 @@ function EditFarmerModal() {
                       name="rsbsaNo"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>RSBSA No.</FormLabel>
+                          <FormLabel>{language.rsbsaNo}</FormLabel>
                           <FormControl>
                             <Input placeholder="Input RSBSA" {...field} />
                           </FormControl>
@@ -214,7 +215,7 @@ function EditFarmerModal() {
                       name="addressLineOne"
                       render={({ field }) => (
                         <FormItem className="col-span-1 lg:col-span-2">
-                          <FormLabel>Address</FormLabel>
+                          <FormLabel>{language.address}</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Ex : Purok 7, Hamorawon, Calbayog City, Samar"
@@ -231,7 +232,7 @@ function EditFarmerModal() {
                       name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
+                          <FormLabel>{language.phone}</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="+639********* or 09*********"
@@ -247,7 +248,7 @@ function EditFarmerModal() {
                       name="birthday"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Date of Birth</FormLabel>
+                          <FormLabel>{language.birthday}</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
@@ -282,13 +283,13 @@ function EditFarmerModal() {
                       )}
                     />
                   </div>
-                  <div className="grid items-start gap-5 md:grid-cols-2 mt-5">
+                  <div className="mt-5 grid items-start gap-5 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="gender"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Gender</FormLabel>
+                          <FormLabel>{language.gender}</FormLabel>
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
@@ -323,7 +324,7 @@ function EditFarmerModal() {
                       name="civilStatus"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Civil Status</FormLabel>
+                          <FormLabel>{language.civilStatus}</FormLabel>
                           <FormControl>
                             <Select
                               onValueChange={field.onChange}
@@ -364,7 +365,7 @@ function EditFarmerModal() {
                       name="spouse"
                       render={({ field }) => (
                         <FormItem className="col-span-1 lg:col-span-2">
-                          <FormLabel>Spouse (Optional)</FormLabel>
+                          <FormLabel>{language.spouse} (Optional)</FormLabel>
                           <FormControl>
                             <Input placeholder="Input spouse name" {...field} />
                           </FormControl>
@@ -377,7 +378,7 @@ function EditFarmerModal() {
                       name="indigenous"
                       render={({ field }) => (
                         <FormItem className="col-span-full">
-                          <FormLabel>Indigenous Person</FormLabel>
+                          <FormLabel>{language.indigenous}</FormLabel>
                           <div className="flex flex-row gap-10 py-1">
                             <div className="flex flex-row items-center gap-3">
                               <Checkbox
@@ -417,7 +418,9 @@ function EditFarmerModal() {
                   </div>
                 </div>
                 <div className="flex w-full justify-end gap-1">
-                  <Button type="button" variant={"outline"} onClick={onClose}>Cancel</Button>
+                  <Button type="button" variant={"outline"} onClick={onClose}>
+                    Cancel
+                  </Button>
                   <Button disabled={isPending}>Submit</Button>
                 </div>
               </div>

@@ -1,0 +1,52 @@
+{
+  "menu": {
+    "news": "News",
+    "farms": "Farms",
+    "account": "Account",
+    "logout": "Log out"
+  },
+  "news": {
+    "header": "News Page",
+    "title": "News",
+    "posted": "Posted",
+    "loading": "Loading...",
+    "noNews": "No news added",
+    "showMore": "Show more"
+  },
+  "farms": {
+    "header": "Farms Page",
+    "yourFarm": "Your Farm",
+    "farmParcel": "Farm Parcel",
+    "hectares": "hectare/s",
+    "farmers": "farmer/s",
+    "cropHistory": "Crop Distribution History",
+    "cropHistoryDescription": "List of all crop distributions for this farm",
+    "noCropDistributionHistory": "No Distribution History",
+    "images": "Images",
+    "map": "Map",
+    "crop": "Crop",
+    "yearSeason": "Year & Season",
+    "noFarms": "No Farms"
+  },
+  "account": {
+    "header": "Account Page",
+    "farmerInfo": "Farmer Information",
+    "edit": "Edit",
+    "editAccountDetails": "Edit Account Details",
+    "accountDetails": "Account Details",
+    "firstName": "First Name",
+    "middleName": "Middle Name",
+    "lastName": "Last Name",
+    "rsbsaNo": "RSBSA No",
+    "phone": "Phone",
+    "birthday": "Birthday",
+    "address": "Address",
+    "gender": "Gender",
+    "civilStatus": "Civil Status",
+    "indigenous": "Indigenous",
+    "spouse": "Spouse",
+    "tribe": "Tribe",
+    "loadingFarmer": "Loading Farmer...",
+    "noFarmerFound": "No farmer found"
+  }
+}

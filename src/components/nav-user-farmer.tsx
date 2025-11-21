@@ -24,24 +24,26 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useLocaleStore } from "@/store/localeStore";
 
 export function NavUserFarmer() {
-  const router = useRouter()
+  const router = useRouter();
   const { isMobile } = useSidebar();
   const { data } = useSession();
-  console.log(data)
+
+  const { messages } = useLocaleStore();
   return (
     <SidebarMenu>
-      <SidebarMenuItem className=" border border-foreground/20 rounded-lg">
+      <SidebarMenuItem className="border-foreground/20 rounded-lg border">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className=" h-8 w-8 rounded-lg text-white">
+              <Avatar className="h-8 w-8 rounded-lg text-white">
                 <AvatarImage src={"/logo.png"} alt={data?.user.name || ""} />
-                <AvatarFallback className="rounded-lg bg-primary">
+                <AvatarFallback className="bg-primary rounded-lg">
                   {data?.user.name?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -61,7 +63,7 @@ export function NavUserFarmer() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={'/logo.png'} alt={data?.user.name || ""} />
+                  <AvatarImage src={"/logo.png"} alt={data?.user.name || ""} />
                   <AvatarFallback className="rounded-lg">
                     {data?.user.name?.[0]}
                   </AvatarFallback>
@@ -78,15 +80,15 @@ export function NavUserFarmer() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push('/farmer/account')}>
+              <DropdownMenuItem onClick={() => router.push("/farmer/account")}>
                 <IconUserCircle />
-                Account
+                {messages.menu.account}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut()}>
               <IconLogout />
-              Log out
+              {messages.menu.logout}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

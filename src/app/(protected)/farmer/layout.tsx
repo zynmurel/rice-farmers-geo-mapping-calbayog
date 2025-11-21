@@ -1,4 +1,5 @@
 "use client";
+import LanguageToogle from "@/app/_components/language-toggle";
 import { ModeToggle } from "@/app/_components/mode-toggle";
 import { FarmerSideBar } from "@/components/farmer-sidebar";
 import {
@@ -15,11 +16,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useLocaleStore } from "@/store/localeStore";
 import { usePathname } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const active = path.split("/")[2] || "news";
+  const { messages } = useLocaleStore();
   return (
     <SidebarProvider>
       <FarmerSideBar />
@@ -32,13 +35,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="capitalize">
-                    {active || "News"} Page
+                    {messages[active as "farms"]?.header}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className=" px-5">
+          <div className="flex flex-row gap-1 px-5">
+            <LanguageToogle />
             <ModeToggle />
           </div>
         </header>

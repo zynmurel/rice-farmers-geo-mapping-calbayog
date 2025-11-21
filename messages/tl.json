@@ -1,0 +1,52 @@
+{
+  "menu": {
+    "news": "Balita",
+    "farms": "Mga Sakahan",
+    "account": "Akunta",
+    "logout": "Mag-logout"
+  },
+  "news": {
+    "header": "Pahina ng Balita",
+    "title": "Balita",
+    "posted": "Naipost",
+    "loading": "Naglo-load...",
+    "noNews": "Walang balita na idinagdag",
+    "showMore": "Ipakita pa"
+  },
+  "farms": {
+    "header": "Pahina ng Sakahan",
+    "yourFarm": "Iyong Sakahan",
+    "farmParcel": "Parselang Sakahan",
+    "hectares": "ektarya",
+    "farmers": "magsasaka",
+    "cropHistory": "Kasaysayan ng Distribusyon ng Pananim",
+    "cropHistoryDescription": "Listahan ng lahat ng distribusyon ng pananim sa sakahang ito",
+    "noCropDistributionHistory": "Walang Kasaysayan ng Distribusyon",
+    "images": "Mga Larawan",
+    "map": "Mapa",
+    "crop": "Pananim",
+    "yearSeason": "Taon at Panahon",
+    "noFarms" : "Walang sakahan"
+  },
+  "account": {
+    "header": "Pahina ng Account",
+    "farmerInfo": "Impormasyon ng Magsasaka",
+    "edit": "I-edit",
+    "editAccountDetails": "I-edit ang Detalye ng Account",
+    "accountDetails": "Detalye ng Account",
+    "firstName": "Unang Pangalan",
+    "middleName": "Gitnang Pangalan",
+    "lastName": "Apelyido",
+    "rsbsaNo": "RSBSA No",
+    "phone": "Telepono",
+    "birthday": "Kaarawan",
+    "address": "Address",
+    "gender": "Kasarian",
+    "civilStatus": "Katayuang Sibil",
+    "indigenous": "Katutubo",
+    "spouse": "Asawa",
+    "tribe": "Tribong Katutubo",
+    "loadingFarmer": "Naglo-load ng Magsasaka...",
+    "noFarmerFound": "Walang Magsasaka na nahanap"
+  }
+}

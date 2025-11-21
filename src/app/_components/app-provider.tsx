@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import "leaflet/dist/leaflet.css";
+import LocaleInitializer from "./locale-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
@@ -19,7 +20,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <Toaster />
       <NuqsAdapter>
         <SessionProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <LocaleInitializer>{children}</LocaleInitializer>
+          </TRPCReactProvider>
         </SessionProvider>
       </NuqsAdapter>
     </ThemeProvider>

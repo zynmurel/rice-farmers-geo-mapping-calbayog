@@ -1,0 +1,52 @@
+{
+  "menu": {
+    "news": "Balita",
+    "farms": "Mga Uma",
+    "account": "Account",
+    "logout": "Mag-logout"
+  },
+  "news": {
+    "header": "Panid han Balita",
+    "title": "Balita",
+    "posted": "Naipaskil",
+    "loading": "Naglo-load...",
+    "noNews": "Waray balita nga nadugang",
+    "showMore": "Ipakita pa"
+  },
+  "farms": {
+    "header": "Panid han Uma",
+    "yourFarm": "Imo Nga Uma",
+    "farmParcel": "Parsel han Uma",
+    "hectares": "ektarya",
+    "farmers": "mangunguma",
+    "cropHistory": "Kasaysayan han Distribusyon han Tanom",
+    "cropHistoryDescription": "Listahan han ngatanan nga distribusyon han tanom ha ini nga uma",
+    "noCropDistributionHistory": "Waray Kasaysayan han Distribusyon",
+    "images": "Mga Larawan",
+    "map": "Mapa",
+    "crop": "Tanom",
+    "yearSeason": "Tuig ngan Panahon",
+    "noFarms": "Waray uma"
+  },
+  "account": {
+    "header": "Panid han Account",
+    "farmerInfo": "Impormasyon han Mangunguma",
+    "edit": "I-edit",
+    "editAccountDetails": "I-edit an Detalye han Account",
+    "accountDetails": "Detalye han Account",
+    "firstName": "Ngaran",
+    "middleName": "Tunga nga Ngaran",
+    "lastName": "Apelyido",
+    "rsbsaNo": "RSBSA No",
+    "phone": "Telepono",
+    "birthday": "Kaarawan",
+    "address": "Address",
+    "gender": "Kasarian",
+    "civilStatus": "Sibil nga Estado",
+    "indigenous": "Katutubo",
+    "spouse": "Asawa",
+    "tribe": "Tribu",
+    "loadingFarmer": "Naglo-load han Mangunguma...",
+    "noFarmerFound": "Waray Mangunguma nga nakit-an"
+  }
+}

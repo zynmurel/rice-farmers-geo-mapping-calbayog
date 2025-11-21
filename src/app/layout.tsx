@@ -6,7 +6,8 @@ import { AppProviders } from "./_components/app-provider";
 
 export const metadata: Metadata = {
   title: "GEO-AGRI",
-  description: "Empowering Calbayog City with a comprehensive overview of rice production",
+  description:
+    "Empowering Calbayog City with a comprehensive overview of rice production",
   icons: [{ rel: "icon", url: "/logo.png" }],
 };
 

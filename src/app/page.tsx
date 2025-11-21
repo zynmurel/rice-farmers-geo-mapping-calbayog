@@ -143,11 +143,11 @@ function Page() {
                           ) : (
                             <div className="absolute top-0 left-0 h-full w-full rounded-lg border border-white/20 bg-white/10" />
                           )}
-                          <div className="bg-background/90 z-10 flex w-full flex-col p-2 rounded">
+                          <div className="bg-background/90 z-10 flex w-full flex-col rounded p-2">
                             <p className="text-sm font-bold md:text-lg">
                               {farm.barangay.toUpperCase()}
                             </p>
-                            <p className="text-xs opacity-80 md:text-sm -mt-1">
+                            <p className="-mt-1 text-xs opacity-80 md:text-sm">
                               {farm.address}
                             </p>
                           </div>

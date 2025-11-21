@@ -24,19 +24,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import CoordinateShape from "@/lib/coordinates-shape";
+import { useLocaleStore } from "@/store/localeStore";
 import { api } from "@/trpc/react";
 import { Image, LoaderCircle, Map, Pyramid, Wheat } from "lucide-react";
 import React from "react";
 
 function Farms() {
-  const shane = "Farm rendered"
-  console.log(shane);
   const { data, isLoading } = api.Farmer.farms.getFarms.useQuery();
+
+  const { messages } = useLocaleStore();
+  const language = messages.farms;
   return (
     <div className="lg:bg-background bg-foreground/10">
       <div className="bg-background flex flex-row items-center gap-2 p-2 font-semibold md:p-4 lg:p-5">
         <Wheat className="size-5" strokeWidth={2.5} />
-        Your Farm
+        {language.yourFarm}
       </div>
       {isLoading ? (
         <div className="flex h-[80vh] flex-row items-center justify-center gap-2">
@@ -56,7 +58,7 @@ function Farms() {
                 className="bg-background p-2 md:p-4 lg:p-2 lg:px-5"
               >
                 <p className="text-foreground/50 text-xs md:text-sm">
-                  Farm Parcel {index + 1}
+                  {language.farmParcel} {index + 1}
                 </p>
                 <p className="text-base font-bold md:text-lg">
                   Barangay {farm.barangay}
@@ -65,11 +67,11 @@ function Farms() {
                 <div className="my-1 grid max-w-[500px] grid-cols-2 gap-1">
                   <div className="bg-chart-1 flex flex-row items-center justify-center gap-1 rounded p-2 text-xs text-white md:text-sm">
                     <Pyramid className="size-4" />
-                    {farm.landArea} hectare/s
+                    {farm.landArea} {language.hectares}
                   </div>
                   <div className="bg-chart-2 flex flex-row items-center justify-center gap-1 rounded p-2 text-xs text-white md:text-sm">
                     <Pyramid className="size-4" />
-                    {farm.farmerCount} farmer/s
+                    {farm.farmerCount} {language.farmers}
                   </div>
                 </div>
                 <div className="w-full">
@@ -80,28 +82,31 @@ function Farms() {
                         size={"sm"}
                         variant={"outline"}
                       >
-                        Crop Distribution History
+                        {language.cropHistory}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="w-full overflow-y-auto px-2 md:min-w-3xl md:px-5">
                       <DialogHeader>
-                        <DialogTitle>Crop Distribution History</DialogTitle>
+                        <DialogTitle>{language.cropHistory}</DialogTitle>
                         <DialogDescription>
-                          List of all crop distributions for this farm
+                          {language.cropHistoryDescription}
                         </DialogDescription>
                       </DialogHeader>
                       {farm.Distribution.length ? (
                         farm.Distribution.sort(
                           (a, b) => Number(b.year) - Number(a.year),
                         ).map((distribution, index) => (
-                          <div key={index} className="rounded border max-h-[60vh] overflow-y-scroll">
+                          <div
+                            key={index}
+                            className="max-h-[60vh] overflow-y-scroll rounded border"
+                          >
                             <Table className="text-xs md:text-sm">
                               <TableHeader>
                                 <TableRow>
                                   <TableHead className="pl-4">
-                                    Year & Season
+                                    {language.yearSeason}
                                   </TableHead>
-                                  <TableHead>Crop</TableHead>
+                                  <TableHead>{language.crop}</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
@@ -119,7 +124,8 @@ function Farms() {
                                       {distribution.CropDistribution.reduce(
                                         (a, c) => a + c.quantity,
                                         0,
-                                      )} kg
+                                      )}{" "}
+                                      kg
                                     </p>
                                   </TableCell>
                                 </TableRow>
@@ -130,7 +136,7 @@ function Farms() {
                       ) : (
                         <div>
                           <div className="text-foreground/50 flex w-full flex-row items-center justify-center p-5 text-sm">
-                            No Distribution History
+                            {language.noCropDistributionHistory}
                           </div>
                         </div>
                       )}
@@ -141,7 +147,9 @@ function Farms() {
                   <div className="w-full">
                     <div className="flex flex-row items-center gap-1 py-1">
                       <Image className="size-4" strokeWidth={2.5} />
-                      <p className="text-sm font-bold md:text-base">Images</p>
+                      <p className="text-sm font-bold md:text-base">
+                        {language.images}
+                      </p>
                     </div>
                     {farm.FarmImage?.length ? (
                       <Dialog>
@@ -183,7 +191,9 @@ function Farms() {
                   <div className="w-full">
                     <div className="flex flex-row items-center gap-1 py-1">
                       <Map className="size-4" strokeWidth={2.5} />
-                      <p className="text-sm font-bold md:text-base">Map</p>
+                      <p className="text-sm font-bold md:text-base">
+                        {language.map}
+                      </p>
                     </div>
 
                     <div className="bg-foreground/5 relative z-0 flex aspect-video w-full items-center justify-center overflow-hidden rounded border">
@@ -198,7 +208,7 @@ function Farms() {
                             <div className="-mt-3 max-w-52">
                               <p className="text-[10px]">{farm.address}</p>
                               <p className="border-chart-1/80 border-l-8 pl-1 text-[10px]">
-                                {farm.landArea} HECTARE/S
+                                {farm.landArea} {language.hectares}
                               </p>
                             </div>
                           </div>
@@ -214,7 +224,7 @@ function Farms() {
       ) : (
         <div className="text-foreground/50 bg-foreground/10 my-1 flex h-[70vh] flex-row items-center justify-center gap-2 rounded border">
           <Wheat className="size-5" />
-          No Farms
+          {language.noFarms}
         </div>
       )}
     </div>
