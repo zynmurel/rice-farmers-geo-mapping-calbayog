@@ -115,9 +115,22 @@ export const farmRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
-      return ctx.db.farm.update({
+      const farm = await ctx.db.farm.update({
         where: { id },
         data: rest,
+        include: {
+          Farmer: true,
+        },
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          farmId: farm.id,
+          type: "FARMER",
+          action: "UPDATE",
+          message: `Updated farm of farmer ${farm.Farmer.firstName} ${farm.Farmer.lastName} into ${rest.isFeatured ? "Featured" : "Not Featured"}`,
+        },
+      });
+      return farm;
     }),
 });

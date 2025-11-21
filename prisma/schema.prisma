@@ -57,6 +57,7 @@ model Farmer {
     updatedAt      DateTime?      @updatedAt
     FarmerAccount  FarmerAccount? @relation(fields: [accountId], references: [id])
     Farms          Farm[]
+    activityLogs   ActivityLog[]
 }
 
 model Farm {
@@ -82,6 +83,7 @@ model Farm {
     FarmImage            FarmImage[]
 
     Distribution Distribution[]
+    activityLogs ActivityLog[]
 }
 
 enum weather_risks {
@@ -150,6 +152,7 @@ model Crop {
     createdAt           DateTime           @default(now())
     updatedAt           DateTime?          @updatedAt
     CropDistribution    CropDistribution[]
+    activityLogs        ActivityLog[]
 }
 
 model Fertilizer {
@@ -159,6 +162,7 @@ model Fertilizer {
     type3                  String                   @default("NITROGEN_FERTILIZER") //...
     name                   String
     FertilizerDistribution FertilizerDistribution[]
+    activityLogs           ActivityLog[]
 }
 
 model CropDistribution {
@@ -210,12 +214,13 @@ model Distribution {
     Planting               Planting[]
     CropDistribution       CropDistribution[]
     FertilizerDistribution FertilizerDistribution[]
+    activityLogs           ActivityLog[]
 
     @@unique([farmId, year, season])
 }
 
 model Planting {
-    id                  String           @id @default(uuid())
+    id                  String            @id @default(uuid())
     distributionId      String
     distributedCropId   Int?
     establishmentType   String //Transplanted, Direct Wet Seeded, Direct Dry Seeded
@@ -226,10 +231,10 @@ model Planting {
     plantedArea         Float? // hectares
     moistureContent     Float? // e.g., 22.5 (percent)
     plantedQuantity     Float //kg
-    plantedUnit         UnitType         @default(KG)
+    plantedUnit         UnitType          @default(KG)
     harvestedQuantity   Float?
-    harvestedUnit       UnitType?        @default(KG)
-    Distribution        Distribution     @relation(fields: [distributionId], references: [id], onDelete: Cascade)
+    harvestedUnit       UnitType?         @default(KG)
+    Distribution        Distribution      @relation(fields: [distributionId], references: [id], onDelete: Cascade)
     CropDistribution    CropDistribution? @relation(fields: [distributedCropId], references: [id], onDelete: Cascade)
 }
 
@@ -245,12 +250,13 @@ model FarmImage {
 }
 
 model News {
-    id        Int         @id @default(autoincrement())
-    title     String
-    content   String
-    postedAt  DateTime    @default(now())
-    updatedAt DateTime?   @updatedAt
-    NewsImage NewsImage[]
+    id           Int           @id @default(autoincrement())
+    title        String
+    content      String
+    postedAt     DateTime      @default(now())
+    updatedAt    DateTime?     @updatedAt
+    NewsImage    NewsImage[]
+    activityLogs ActivityLog[]
 }
 
 model NewsImage {
@@ -259,6 +265,45 @@ model NewsImage {
     url       String
     createdAt DateTime @default(now())
     News      News     @relation(fields: [newsId], references: [id])
+}
+
+model ActivityLog {
+    id             String            @id @default(uuid())
+    type           ActivityLogType
+    action         ActivityLogAction
+    farmerId       String?
+    farmId         String?
+    newsId         Int?
+    distributionId String?
+    cropsId        String?
+    fertilizerId   String?
+    message        String?
+
+    News         News?         @relation(fields: [newsId], references: [id])
+    Farmer       Farmer?       @relation(fields: [farmerId], references: [id])
+    Farm         Farm?         @relation(fields: [farmId], references: [id])
+    Distribution Distribution? @relation(fields: [distributionId], references: [id])
+    Crop         Crop?         @relation(fields: [cropsId], references: [id])
+    Fertilizer   Fertilizer?   @relation(fields: [fertilizerId], references: [id])
+    createdAt    DateTime      @default(now())
+}
+
+enum ActivityLogType {
+    FARMER
+    FARM
+    CROPS
+    FERTILIZER
+    NEWS
+    DISTRIBUTION
+    ACCOUNT
+}
+
+enum ActivityLogAction {
+    CREATE
+    UPDATE
+    DELETE
+    LOGIN
+    LOGOUT
 }
 
 enum DistributionType {

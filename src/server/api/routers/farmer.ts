@@ -143,6 +143,29 @@ export const farmerRouter = createTRPCRouter({
             });
           }),
         );
+
+        await ctx.db.activityLog.create({
+          data: {
+            farmerId: farmerData.id,
+            type: "FARMER",
+            action: "UPDATE",
+            message: `Created farmer ${farmerData.firstName} ${farmerData.lastName}`,
+          },
+        });
+
+        await Promise.all(
+          farmsData.map((fd) => {
+            ctx.db.activityLog.create({
+              data: {
+                farmerId: fd.id,
+                type: "FARM",
+                action: "UPDATE",
+                message: `Created a farm for ${farmerData.firstName} ${farmerData.lastName}`,
+              },
+            });
+          }),
+        );
+
         return {
           farmer: farmerData,
           farms: farmsData,
@@ -153,10 +176,20 @@ export const farmerRouter = createTRPCRouter({
     .input(updateFarmerSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
-      return ctx.db.farmer.update({
+      const farmer = await ctx.db.farmer.update({
         where: { id },
         data: rest,
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          farmerId: farmer.id,
+          type: "FARMER",
+          action: "UPDATE",
+          message: `Updated farm of ${farmer.firstName} ${farmer.lastName}`,
+        },
+      });
+      return farmer;
     }),
   updateFarm: protectedProcedure
     .input(updateFarmSchema)
@@ -171,12 +204,22 @@ export const farmerRouter = createTRPCRouter({
       } = input;
       const coordinatesToJson = formatCoordinatesToJSON(coordinates);
       const IsFeatured = !rest.isPublished ? { isFeatured: false } : {};
-      return ctx.db.farm.update({
+      const farm = await ctx.db.farm.update({
         where: { id },
         data: {
           ...rest,
           ...IsFeatured,
           coordinates: coordinatesToJson || [],
+        },
+        include: { Farmer: true },
+      });
+
+      await ctx.db.activityLog.create({
+        data: {
+          farmId: farm.id,
+          type: "FARM",
+          action: "UPDATE",
+          message: `Updated farm of ${farm.Farmer.firstName} ${farm.Farmer.lastName}`,
         },
       });
     }),
@@ -184,11 +227,24 @@ export const farmerRouter = createTRPCRouter({
     .input(addFarmImageSchema)
     .mutation(async ({ ctx, input }) => {
       const { farmId, images } = input;
-      return ctx.db.farmImage.createMany({
+      await ctx.db.farmImage.createMany({
         data: images.map((img) => ({
           url: img,
           farmId,
         })),
+      });
+
+      const farmer = await ctx.db.farmer.findFirst({
+        where: { Farms: { some: { id: farmId } } },
+      });
+
+      await ctx.db.activityLog.create({
+        data: {
+          farmId: farmId,
+          type: "FARM",
+          action: "UPDATE",
+          message: `Added image/s for ${farmer?.firstName} ${farmer?.lastName} farm`,
+        },
       });
     }),
   createFarm: protectedProcedure
@@ -206,13 +262,24 @@ export const farmerRouter = createTRPCRouter({
 
       const coordinatesToJson = formatCoordinatesToJSON(coordinates);
       const IsFeatured = !rest.isPublished ? { isFeatured: false } : {};
-      return ctx.db.farm.create({
+      const farm = await ctx.db.farm.create({
         data: {
           ...rest,
           ...IsFeatured,
           coordinates: coordinatesToJson || [],
           farmerId,
         },
+        include: { Farmer: true },
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          farmId: farm.id,
+          type: "FARM",
+          action: "CREATE",
+          message: `Created a farm for ${farm.Farmer.firstName} ${farm.Farmer.lastName}`,
+        },
+      });
+      return farm;
     }),
 });

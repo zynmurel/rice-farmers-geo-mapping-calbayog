@@ -14,7 +14,7 @@ export const fertilizerRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
-      return ctx.db.fertilizer.upsert({
+      const fertilzer = await ctx.db.fertilizer.upsert({
         where: { id: id || "" },
         create: {
           ...rest,
@@ -23,6 +23,16 @@ export const fertilizerRouter = createTRPCRouter({
           ...rest,
         },
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          fertilizerId: fertilzer.id,
+          type: "FERTILIZER",
+          action: !id ? "UPDATE" : "CREATE",
+          message: `${!id ? "Created" : "Updated"} fertilizer ${fertilzer.name}`,
+        },
+      });
+      return fertilzer;
     }),
   getFertilizer: protectedProcedure
     .input(

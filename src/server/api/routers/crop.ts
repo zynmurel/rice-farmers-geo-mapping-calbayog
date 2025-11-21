@@ -22,7 +22,7 @@ export const cropRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, ...rest } = input;
-      return ctx.db.crop.upsert({
+      const crop = await ctx.db.crop.upsert({
         where: { id: id || "" },
         create: {
           ...rest,
@@ -31,6 +31,17 @@ export const cropRouter = createTRPCRouter({
           ...rest,
         },
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          cropsId: crop.id,
+          type: "CROPS",
+          action: !id ? "UPDATE" : "CREATE",
+          message: `${!id ? "Created" : "Updated"} crop ${crop.title}`,
+        },
+      });
+      
+      return crop;
     }),
   getCrops: protectedProcedure
     .input(

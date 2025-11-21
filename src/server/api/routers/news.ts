@@ -58,8 +58,8 @@ export const newsRouter = createTRPCRouter({
         skip,
         take,
         include: {
-          NewsImage : true
-        }
+          NewsImage: true,
+        },
       });
     }),
   getAllCount: protectedProcedure
@@ -110,6 +110,15 @@ export const newsRouter = createTRPCRouter({
             : undefined,
         },
         include: { NewsImage: true },
+      });
+
+      await ctx.db.activityLog.create({
+        data: {
+          newsId: news.id,
+          type: "NEWS",
+          action: "CREATE",
+          message: `Created a news`,
+        },
       });
 
       return news;

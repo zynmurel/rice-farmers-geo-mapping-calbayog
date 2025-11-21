@@ -52,7 +52,7 @@ export const distributionRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { cropDistributionId, ...rest } = input;
-      return await ctx.db.cropDistribution.upsert({
+      const cropDistrubution = await ctx.db.cropDistribution.upsert({
         where: {
           id: cropDistributionId || 0,
         },
@@ -68,7 +68,20 @@ export const distributionRouter = createTRPCRouter({
           type: "SEED",
           unit: "KG",
         },
+        include: {
+          Distribution: true,
+        },
       });
+
+      await ctx.db.activityLog.create({
+        data: {
+          distributionId: cropDistrubution.Distribution.id,
+          type: "DISTRIBUTION",
+          action: !cropDistributionId ? "UPDATE" : "CREATE",
+          message: `${!cropDistributionId ? "Created" : "Updated"} a crop distribution`,
+        },
+      });
+      return cropDistrubution;
     }),
   upsertFertilizerDistribution: protectedProcedure
     .input(
@@ -82,19 +95,32 @@ export const distributionRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { fertilizerDistributionId, ...rest } = input;
-      return await ctx.db.fertilizerDistribution.upsert({
-        where: {
-          id: fertilizerDistributionId || 0,
+      const fertilizerDistribution = await ctx.db.fertilizerDistribution.upsert(
+        {
+          where: {
+            id: fertilizerDistributionId || 0,
+          },
+          create: {
+            ...rest,
+            unit: "KG",
+          },
+          update: {
+            ...rest,
+            unit: "KG",
+          },
+          include: { Fertilizer: true },
         },
-        create: {
-          ...rest,
-          unit: "KG",
-        },
-        update: {
-          ...rest,
-          unit: "KG",
+      );
+
+      await ctx.db.activityLog.create({
+        data: {
+          fertilizerId: fertilizerDistribution.Fertilizer.id,
+          type: "FERTILIZER",
+          action: !fertilizerDistributionId ? "UPDATE" : "CREATE",
+          message: `${!fertilizerDistributionId ? "Created" : "Updated"} a fertilizer distribution`,
         },
       });
+      return fertilizerDistribution;
     }),
   upsertPlanting: protectedProcedure
     .input(
