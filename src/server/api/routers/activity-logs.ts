@@ -20,7 +20,7 @@ export const activityLogRouter = createTRPCRouter({
           ...whereType,
           ...whereAction,
         },
-        orderBy : { createdAt : "desc"},
+        orderBy: { createdAt: "desc" },
         skip,
         take,
       });
@@ -43,4 +43,22 @@ export const activityLogRouter = createTRPCRouter({
         },
       });
     }),
+  createLogLogin: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.db.activityLog.create({
+      data: {
+        type: "ACCOUNT",
+        action: "LOGIN",
+        message: "You logged in.",
+      },
+    });
+  }),
+  createLogLogout: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.db.activityLog.create({
+      data: {
+        type: "ACCOUNT",
+        action: "LOGOUT",
+        message: "You logged out.",
+      },
+    });
+  }),
 });

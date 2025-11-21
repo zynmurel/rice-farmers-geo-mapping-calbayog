@@ -23,23 +23,29 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { signOut, useSession } from "next-auth/react";
+import { api } from "@/trpc/react";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { data } = useSession();
-  console.log(data)
+
+  const { mutate } = api.activityLog.createLogLogout.useMutation();
+  const onLogount = async () => {
+    mutate();
+    signOut();
+  };
   return (
     <SidebarMenu>
-      <SidebarMenuItem className=" border border-foreground/20 rounded-lg">
+      <SidebarMenuItem className="border-foreground/20 rounded-lg border">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className=" h-8 w-8 rounded-lg text-white">
+              <Avatar className="h-8 w-8 rounded-lg text-white">
                 <AvatarImage src={"/logo.png"} alt={data?.user.name || ""} />
-                <AvatarFallback className="rounded-lg bg-primary">
+                <AvatarFallback className="bg-primary rounded-lg">
                   {data?.user.name?.[0]}
                 </AvatarFallback>
               </Avatar>
@@ -59,7 +65,7 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={'/logo.png'} alt={data?.user.name || ""} />
+                  <AvatarImage src={"/logo.png"} alt={data?.user.name || ""} />
                   <AvatarFallback className="rounded-lg">
                     {data?.user.name?.[0]}
                   </AvatarFallback>
@@ -82,7 +88,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator /> */}
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem onClick={onLogount}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
