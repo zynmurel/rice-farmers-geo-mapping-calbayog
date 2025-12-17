@@ -144,18 +144,18 @@ export const farmerRouter = createTRPCRouter({
           }),
         );
 
-        await ctx.db.activityLog.create({
+        await tx.activityLog.create({
           data: {
             farmerId: farmerData.id,
             type: "FARMER",
-            action: "UPDATE",
+            action: "CREATE",
             message: `Created farmer ${farmerData.firstName} ${farmerData.lastName}`,
           },
         });
 
         await Promise.all(
           farmsData.map((fd) => {
-            ctx.db.activityLog.create({
+            tx.activityLog.create({
               data: {
                 farmerId: fd.id,
                 type: "FARM",
